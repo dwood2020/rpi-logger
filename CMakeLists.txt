@@ -19,3 +19,6 @@ set(MAIN_TARGET ${CMAKE_PROJECT_NAME})
 add_executable(${MAIN_TARGET})
 
 add_subdirectory(src)
+add_subdirectory(vendor)
+
+target_link_libraries(${MAIN_TARGET} PUBLIC lib::bcm2835)
