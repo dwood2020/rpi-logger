@@ -18,4 +18,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(MAIN_TARGET ${CMAKE_PROJECT_NAME})
 add_executable(${MAIN_TARGET})
 
-include_directories(src)
+add_subdirectory(src)

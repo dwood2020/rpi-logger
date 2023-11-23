@@ -4,5 +4,5 @@
 # ==============================================================================
 
 target_sources(${MAIN_TARGET} PRIVATE
-    "./main.cpp"
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
