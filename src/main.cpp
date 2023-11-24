@@ -1,8 +1,8 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include "bcm2835.h"
 #include "hal/gpio.h"
+#include "hal/gpioPin.h"
 
 
 
@@ -14,17 +14,15 @@ int main(void) {
         return 1;
     }
 
-    gpio::initOutputPin(24);
+    gpio::OutputPin pin(24);
 
     for (int i = 0; i < 10; i++) {
-        // pin.setHigh();
-        gpio::setPinHigh(24);
+        pin.setHigh();
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        // pin.setLow();
-        gpio::setPinLow(24);
+        pin.setLow();
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
-    bcm2835_close();
+    gpio::cleanup();
     return 0;
 }

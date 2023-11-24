@@ -12,6 +12,9 @@ namespace gpio {
         return type;
     }
 
+    unsigned int Pin::getNumber(void) const {
+        return number;
+    }
 
     InputPin::InputPin(int number): Pin(PinType::Input, number) {
         gpio::initInputPin(this->number);

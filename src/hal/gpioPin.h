@@ -28,10 +28,16 @@ namespace gpio {
         virtual ~Pin() = default;
 
         /**
-         * Get the pin's type.
+         * Get this pin's type.
          * \return Pin type (see generic pin types).
         */
         PinType getType(void) const;
+
+        /**
+         * Get this pin's number.
+         * \return Pin number.
+        */
+        unsigned int getNumber(void) const;
     };
 
 
