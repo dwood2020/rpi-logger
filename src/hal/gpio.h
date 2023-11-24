@@ -3,7 +3,8 @@
 /**
  * Generic GPIO interface functions. 
  * These functions do not introduce any types. They solely represent the coupling 
- * layer tos the hardware-specific interface.
+ * layer to the hardware-specific interface.
+ * Only one hardware interface implementation can be linked at a time.
 */
 namespace gpio {
 
