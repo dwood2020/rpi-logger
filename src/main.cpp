@@ -2,26 +2,26 @@
 #include <chrono>
 #include <thread>
 #include "bcm2835.h"
-#include "hal/Bcm2835Pin.h"
+#include "hal/gpio.h"
+
 
 
 int main(void) {
     std::cout << "Hello rpi-logger!" << std::endl;
 
-    // TODO: Write HAL/wrapper around GPIOs!
-    if (!bcm2835_init()) {
-        std::cout << "FAILED TO INIT BCM2835!!" << std::endl;
+    if (!gpio::init()) {
+        std::cout << "Failed to init GPIO!" << std::endl;
         return 1;
     }
 
-    bcm2835_gpio_fsel(24, BCM2835_GPIO_FSEL_OUTP);
-
-    Bcm2835OutputPin pin(24);
+    gpio::initOutputPin(24);
 
     for (int i = 0; i < 10; i++) {
-        pin.setHigh();
+        // pin.setHigh();
+        gpio::setPinHigh(24);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        pin.setLow();
+        // pin.setLow();
+        gpio::setPinLow(24);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
