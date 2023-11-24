@@ -25,6 +25,9 @@ namespace gpio {
         Pin(PinType type, unsigned int number);
 
     public:
+        Pin() = delete;
+        Pin(const Pin&) = delete;
+        Pin& operator=(const Pin&) = delete;
         virtual ~Pin() = default;
 
         /**
