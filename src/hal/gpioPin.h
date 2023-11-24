@@ -40,7 +40,12 @@ namespace gpio {
     */
     class InputPin : public Pin {
     public:
-        InputPin(int number): Pin(PinType::Input, number) {}
+        /**
+         * Constructor.
+         * \param number This pin's pin number.
+         * TODO: Pin is currently initialized here. This may have to change, check! Maybe unsafe?
+        */
+        InputPin(int number);
         virtual ~InputPin() = default;
 
         /**
@@ -56,7 +61,12 @@ namespace gpio {
     */
     class OutputPin : public Pin {
     public:
-        OutputPin(int number): Pin(PinType::Output, number) {}
+        /**
+         * Constructor.
+         * \param number This pin's pin number.
+         * TODO: Pin is currently initialized here. This may have to change, check! Maybe unsafe?
+        */
+        OutputPin(int number);
         virtual ~OutputPin() = default;
 
         /**
