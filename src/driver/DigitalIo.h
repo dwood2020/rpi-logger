@@ -4,6 +4,8 @@
 
 /**
  * Concrete base class for all IO subclasses.
+ * TODO: How to make this thread-safe: Hold ptr to a new GpioController instead of hal::IGpio.
+ * Controller owns mutexes, ask controller first before each read/write.
 */
 class DigitalIoBase {
 protected:
