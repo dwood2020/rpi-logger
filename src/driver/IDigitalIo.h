@@ -7,7 +7,11 @@
 */
 class IDigitalInput {
 public:
+    IDigitalInput() = default;
     virtual ~IDigitalInput() = default;
+
+    IDigitalInput(const IDigitalInput&) = delete;
+    IDigitalInput& operator=(const IDigitalInput&) = delete;
 
     /**
      * Get voltage level of this input.
@@ -22,7 +26,11 @@ public:
 */
 class IDigitalOutput {
 public:
+    IDigitalOutput() = default;
     virtual ~IDigitalOutput() = default;
+
+    IDigitalOutput(const IDigitalOutput&) = delete;
+    IDigitalOutput& operator=(const IDigitalOutput&) = delete;
 
     /**
      * Set this output's voltage level low.
@@ -41,7 +49,11 @@ public:
 */
 class IDigitalReconfigurableIo: public IDigitalInput, public IDigitalOutput {
 public:
+    IDigitalReconfigurableIo() = default;
     virtual ~IDigitalReconfigurableIo() = default;
+
+    IDigitalReconfigurableIo(const IDigitalReconfigurableIo&) = delete;
+    IDigitalReconfigurableIo& operator=(const IDigitalReconfigurableIo&) = delete;
 
     /**
      * Configure this digital I/O as input.
