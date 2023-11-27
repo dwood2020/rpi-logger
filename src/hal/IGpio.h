@@ -25,6 +25,9 @@ namespace hal {
         IGpio() = default;
         virtual ~IGpio() = default;
 
+        IGpio(const IGpio&) = delete;
+        IGpio& operator=(const IGpio&) = delete;
+
         /**
          * Initialize the GPIO hardware layer.
          * \return \c True if successful, \c false else.
