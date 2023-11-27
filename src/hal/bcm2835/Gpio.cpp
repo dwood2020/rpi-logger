@@ -33,7 +33,7 @@ void hal::bcm2835::Gpio::setPinLow(PinNumber_t pinNumber) {
     bcm2835_gpio_write(static_cast<uint8_t>(pinNumber), LOW);
 }
 
-hal::PinState hal::bcm2835::Gpio::getPinLevel(PinNumber_t pinNumber) {
+hal::PinLevel hal::bcm2835::Gpio::getPinLevel(PinNumber_t pinNumber) {
     uint8_t lev = bcm2835_gpio_lev(static_cast<uint8_t>(pinNumber));
-    return (lev == HIGH) ? PinState::High : PinState::Low;
+    return (lev == HIGH) ? PinLevel::High : PinLevel::Low;
 }

@@ -16,7 +16,7 @@ namespace hal::bcm2835 {
 
         void setPinHigh(PinNumber_t pinNumber) override;
         void setPinLow(PinNumber_t pinNumber) override;
-        hal::PinState getPinLevel(PinNumber_t pinNumber) override;
+        hal::PinLevel getPinLevel(PinNumber_t pinNumber) override;
     };
 
 }

@@ -11,7 +11,7 @@ namespace hal {
     /**
      * GPIO pin state.
     */
-    enum class PinState {
+    enum class PinLevel {
         Low = 0,
         High = 1
     };
@@ -63,8 +63,8 @@ namespace hal {
         /**
          * Get an input pin's current level.
          * \param pinNumber Pin number of pin.
-         * \return Pin state.
+         * \return Pin level.
         */
-        virtual PinState getPinLevel(PinNumber_t pinNumber) = 0;
+        virtual PinLevel getPinLevel(PinNumber_t pinNumber) = 0;
     };
 }
