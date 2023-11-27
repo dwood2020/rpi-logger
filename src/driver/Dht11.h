@@ -1,14 +1,13 @@
 #pragma once
 #include <cstdint>
-#include "hal/gpioPin.h"
-
+#include "driver/IDigitalIo.h"
 
 /**
  * Driver class. Represents a DHT11 device.
 */
 class Dht11 {
 private:
-    gpio::OutputPin& pin;
+    IDigitalReconfigurableIo* pin;
     uint64_t pollingBuffer = 0;
 
 public:
@@ -17,7 +16,7 @@ public:
      * \param gpioPin The GPIO pin number the device uses as data pin.
      * NOTE: This parameter will change in future when a GPIO abstraction class is written!
     */
-    Dht11(gpio::OutputPin& pin);
+    Dht11(IDigitalReconfigurableIo& pin);
     virtual ~Dht11() = default;
 
     void poll(void);
