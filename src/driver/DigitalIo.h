@@ -1,4 +1,5 @@
 #pragma once
+#include "IDigitalIo.h"
 #include "hal/IGpio.h"
 
 
@@ -20,16 +21,7 @@ public:
 };
 
 
-
-class IDigitalInput {
-public:
-    virtual ~IDigitalInput() = default;
-
-    virtual hal::PinLevel getLevel(void) = 0;
-};
-
-
-class DigitalInput: IDigitalInput, DigitalIoBase {
+class DigitalInput: public IDigitalInput, public DigitalIoBase {
 public:
     DigitalInput(hal::IGpio& gpio, hal::PinNumber_t pinNumber);
     virtual ~DigitalInput() = default;
@@ -38,16 +30,7 @@ public:
 };
 
 
-class IDigitalOutput {
-public:
-    virtual ~IDigitalOutput() = default;
-
-    virtual void setLow(void) = 0;
-    virtual void setHigh(void) = 0;
-};
-
-
-class DigitalOutput: IDigitalOutput, DigitalIoBase {
+class DigitalOutput: public IDigitalOutput, public DigitalIoBase {
 public:
     DigitalOutput(hal::IGpio& gpio, hal::PinNumber_t pinNumber);
     virtual ~DigitalOutput() = default;
@@ -57,4 +40,16 @@ public:
 };
 
 
-// TODO: DigitalReconfigurableIo 
+class DigitalReconfigurableIo : public IDigitalReconfigurableIo, public DigitalIoBase {
+public:
+    DigitalReconfigurableIo(hal::IGpio& gpio, hal::PinNumber_t pinNumber);
+    virtual ~DigitalReconfigurableIo() = default;
+
+    hal::PinLevel getLevel(void) override;
+
+    void setLow(void) override;
+    void setHigh(void) override;
+
+    void configureAsInput(void) override;
+    void configureAsOutput(void) override;
+};

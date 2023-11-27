@@ -29,3 +29,27 @@ void DigitalOutput::setLow(void) {
 void DigitalOutput::setHigh(void) {
     gpioDevice->setPinHigh(pinNumber);
 }
+
+
+DigitalReconfigurableIo::DigitalReconfigurableIo(hal::IGpio& gpio, hal::PinNumber_t pinNumber): DigitalIoBase(gpio, pinNumber) {
+}
+
+hal::PinLevel DigitalReconfigurableIo::getLevel(void) {
+    return gpioDevice->getPinLevel(pinNumber);
+}
+
+void DigitalReconfigurableIo::setLow(void) {
+    gpioDevice->setPinLow(pinNumber);
+}
+
+void DigitalReconfigurableIo::setHigh(void) {
+    gpioDevice->setPinHigh(pinNumber);
+}
+
+void DigitalReconfigurableIo::configureAsInput(void) {
+    gpioDevice->initInputPin(pinNumber);
+}
+
+void DigitalReconfigurableIo::configureAsOutput(void) {
+    gpioDevice->initOutputPin(pinNumber);
+}
