@@ -15,6 +15,7 @@ void Dht11::poll(void) {
     bool levelIsOk = false;
     for (int t = 0; t < 20000; t++) {
         if (pin->getLevel() == hal::PinLevel::Low) {
+            std::cout << "Level is OK (1), t = " << t << "\n";
             levelIsOk = true;
             break;
         }
@@ -33,18 +34,20 @@ void Dht11::poll(void) {
         for (int t = 0; t < 2000; t++) {
             if (pin->getLevel() == hal::PinLevel::High) {
                 tStart = std::chrono::steady_clock::now();
+                levelIsOk = true;
                 break;
             }
         }
         if (!levelIsOk) {
-            std::cout << "Level is not OK (2)\n";
+            std::cout << "Level is not OK (2), i = " << i << "\n";
             return;
         }
 
         levelIsOk = false;
-        for (int t = 0; t < 2000; t++) {
+        for (int t = 0; t < 20000; t++) {
             if (pin->getLevel() == hal::PinLevel::Low) {
                 tEnd = std::chrono::steady_clock::now();
+                levelIsOk = true;
                 break;
             }
         }
@@ -69,8 +72,14 @@ void Dht11::poll(void) {
         }
     }
 
-    std::bitset<64> bufferBits(buffer);
-    std::cout << "bufferBits: " << bufferBits << std::endl;
+    // std::bitset<64> bufferBits(buffer);
+    // std::cout << "bufferBits: " << bufferBits << std::endl;
+    
+    std::cout << "buffer bits: ";
+    for (int i = 0; i < 41; i++) {
+        std::cout << buffer[i];
+    }
+    std::cout << std::endl;
 }
 
 void Dht11::getData(void) {
