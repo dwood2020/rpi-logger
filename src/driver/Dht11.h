@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <array>
 #include "driver/IDigitalIo.h"
 
 /**
@@ -23,6 +24,6 @@ public:
 
 private:
     void requestData(void);
-    bool receiveDeltas(void);
+    bool receiveDeltas(std::array<unsigned long, 41>& buffer);
 
 };
