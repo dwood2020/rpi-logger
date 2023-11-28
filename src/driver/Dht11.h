@@ -23,5 +23,6 @@ public:
 
 private:
     void requestData(void);
+    bool receiveDeltas(void);
 
 };

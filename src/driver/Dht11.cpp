@@ -1,9 +1,9 @@
 #include "Dht11.h"
 #include <thread>
 #include <chrono>
+#include <array>
+
 #include <iostream>
-#include <cmath>
-#include <bitset>
 
 
 Dht11::Dht11(IDigitalReconfigurableIo& pin): pin(&pin) {
@@ -28,7 +28,7 @@ void Dht11::poll(void) {
 
     std::chrono::steady_clock::time_point tStart;
     std::chrono::steady_clock::time_point tEnd;
-    unsigned long long deltaBuffer[41];
+    std::array<unsigned long long, 41> deltaBuffer;
 
     for (int i = 0; i < 41; i++) {
         levelIsOk = false;
@@ -51,7 +51,6 @@ void Dht11::poll(void) {
             if (pin->getLevel() == hal::PinLevel::Low) {
                 tEnd = std::chrono::steady_clock::now();
                 levelIsOk = true;
-                // std::cout << "(3) t = " << t << "\n";
                 break;
             }
         }
@@ -90,10 +89,16 @@ void Dht11::poll(void) {
     std::cout << std::endl;
 }
 
+
 void Dht11::requestData(void) {
     // Configure as output pin and pull down for 0.8-29ms.
     pin->configureAsOutput();
     pin->setLow();
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
     pin->configureAsInput();
+}
+
+
+bool Dht11::receiveDeltas(void) {
+    return false;
 }
