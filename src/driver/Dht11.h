@@ -25,5 +25,6 @@ public:
 private:
     void requestData(void);
     bool receiveDeltas(std::array<unsigned long, 41>& buffer);
+    void deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer);
 
 };

@@ -19,24 +19,8 @@ void Dht11::poll(void) {
         return;
     }
 
-
-    // Translate deltas to bits
-    int bitBuffer[41];
-    for (int i = 0; i < 41; i++) {
-        unsigned long delta70 = std::labs(70 - deltaBuffer[i]);
-        unsigned long delta26 = std::labs(26 - deltaBuffer[i]);
-
-        std::cout << "[" << i << "] delta: " << deltaBuffer[i] << "  delta70: " << delta70 << "  delta26: " << delta26 << std::endl;
-
-        if (delta70 < delta26) {
-            // 1
-            bitBuffer[i] = 1;
-        }
-        else {
-            // 0
-            bitBuffer[i] = 0;
-        }
-    }
+    std::array<unsigned int, 41> bitBuffer;
+    deltasToBits(deltaBuffer, bitBuffer);
 
     std::cout << "bitBuffer: ";
     for (int i = 0; i < 41; i++) {
@@ -135,4 +119,25 @@ bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
         buffer[i] = tDelta.count();
     }
     return true;
+}
+
+
+void Dht11::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer) {
+    // Translate high level time deltas to bits:
+    // 70us high = 1, 24-26us high = 0.
+    for (int i = 0; i < 41; i++) {
+        unsigned long delta70 = std::labs(70 - deltaBuffer[i]);
+        unsigned long delta26 = std::labs(26 - deltaBuffer[i]);
+
+        std::cout << "[" << i << "] delta: " << deltaBuffer[i] << "  delta70: " << delta70 << "  delta26: " << delta26 << std::endl;
+
+        if (delta70 < delta26) {
+            // 1
+            bitBuffer[i] = 1;
+        }
+        else {
+            // 0
+            bitBuffer[i] = 0;
+        }
+    }
 }
