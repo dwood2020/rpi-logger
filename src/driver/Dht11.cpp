@@ -40,19 +40,30 @@ void Dht11::poll(void) {
         bytes[b] = byte;
     }
     printf("\n");
-    
+
+    // checksum
+    unsigned int checksum = 0;
+    for (int i = 0; i < 4; i++) {
+        checksum += bytes[i];
+    }
+    checksum &= 0xFFu;
+    if (checksum == (unsigned int)bytes[4]) {
+        std::cout << "checksum OK\n";
+    }
+    printf("checksum: 0x%02X\n", checksum);
+
 
     float humidity = (float) ((bytes[0] << 8) + (bytes[1]));
     humidity /= 10.0f;
     std::cout << "humidity: " << humidity << "%\n";
 
-    float temperature = (float) (((bytes[2] && 0x7Fu) << 8) + bytes[4]);
+    float temperature = (float) (((bytes[2] && 0x7Fu) << 8) + bytes[3]);
     temperature /= 10.0f;
     int negative = bytes[2] & 0x80u;
     if (negative == 1) {
         temperature = -temperature;
     }
-    std::cout << "temperature: " << temperature << "°C\n";
+    std::cout << "temperature: " << temperature << "°C" << std::endl;
 
 }
 
