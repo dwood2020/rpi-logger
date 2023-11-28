@@ -15,6 +15,7 @@ void Dht11::poll(void) {
     bool levelIsOk = false;
     for (int t = 0; t < 20000; t++) {
         if (pin->getLevel() == hal::PinLevel::Low) {
+            // TODO: If I remove this line, sensor reading fails at step 3
             std::cout << "Level is OK (1), t = " << t << "\n";
             levelIsOk = true;
             break;
