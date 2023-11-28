@@ -18,7 +18,7 @@ int main(void) {
         return 1;
     }
 
-    DigitalReconfigurableIo pin(gpio, 12);
+    DigitalReconfigurableIo pin(gpio, 24);
     Dht11 dht11(pin);
     dht11.poll();
 

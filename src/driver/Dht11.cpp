@@ -12,10 +12,16 @@ Dht11::Dht11(IDigitalReconfigurableIo& pin): pin(&pin) {
 void Dht11::poll(void) {
     getData();
 
-    for (int t = 0; t < 2000; t++) {
+    bool levelIsOk = false;
+    for (int t = 0; t < 20000; t++) {
         if (pin->getLevel() == hal::PinLevel::Low) {
+            levelIsOk = true;
             break;
         }
+    }
+    if (!levelIsOk) {
+        std::cout << "Level is not OK (1)\n";
+        return;
     }
 
     std::chrono::steady_clock::time_point tStart;
@@ -23,18 +29,28 @@ void Dht11::poll(void) {
     int buffer[41];
 
     for (int i = 0; i < 41; i++) {
+        levelIsOk = false;
         for (int t = 0; t < 2000; t++) {
             if (pin->getLevel() == hal::PinLevel::High) {
                 tStart = std::chrono::steady_clock::now();
                 break;
             }
         }
+        if (!levelIsOk) {
+            std::cout << "Level is not OK (2)\n";
+            return;
+        }
 
+        levelIsOk = false;
         for (int t = 0; t < 2000; t++) {
             if (pin->getLevel() == hal::PinLevel::Low) {
                 tEnd = std::chrono::steady_clock::now();
                 break;
             }
+        }
+        if (!levelIsOk) {
+            std::cout << "Level is not OK (3)\n";
+            return;
         }
 
         auto tDelta = std::chrono::duration_cast<std::chrono::microseconds>(tEnd - tStart);
@@ -42,6 +58,7 @@ void Dht11::poll(void) {
 
         long long delta70 = std::labs(70 - deltaUs);
         long long delta26 = std::labs(26 - deltaUs);
+        std::cout << "delta70: " << delta70 << "  delta26: " << delta26 << std::endl;
         if (delta70 < delta26) {
             // 1
             buffer[i] = 1;
@@ -50,7 +67,6 @@ void Dht11::poll(void) {
             // 0
             buffer[i] = 0;
         }
-
     }
 
     std::bitset<64> bufferBits(buffer);
