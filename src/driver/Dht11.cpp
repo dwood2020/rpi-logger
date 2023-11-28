@@ -10,7 +10,7 @@ Dht11::Dht11(IDigitalReconfigurableIo& pin): pin(&pin) {
 }
 
 void Dht11::poll(void) {
-    getData();
+    requestData();
 
     bool levelIsOk = false;
     for (int t = 0; t < 200; t++) {
@@ -90,7 +90,7 @@ void Dht11::poll(void) {
     std::cout << std::endl;
 }
 
-void Dht11::getData(void) {
+void Dht11::requestData(void) {
     // Configure as output pin and pull down for 0.8-29ms.
     pin->configureAsOutput();
     pin->setLow();

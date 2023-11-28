@@ -22,6 +22,6 @@ public:
     void poll(void);
 
 private:
-    void getData(void);
+    void requestData(void);
 
 };
