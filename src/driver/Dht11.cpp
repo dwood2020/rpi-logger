@@ -79,6 +79,8 @@ void Dht11::requestData(void) {
 
 bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
     bool levelIsOk = false;
+    std::chrono::steady_clock::time_point tStart;
+    std::chrono::steady_clock::time_point tEnd;
 
     // Wait until sensor pulls line low.
     for (int t = 0; t < 200; t++) {
@@ -92,9 +94,6 @@ bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
         std::cout << "Level is not OK (1)\n";
         return false;
     }
-
-    std::chrono::steady_clock::time_point tStart;
-    std::chrono::steady_clock::time_point tEnd;
 
     // Get 40 data bits + the start sequence (which will always be read as 1).
     for (int i = 0; i < 41; i++) {
