@@ -4,6 +4,7 @@
 
 #include "hal/IGpio.h"
 #include "hal/bcm2835/Gpio.h"
+#include "hal/hosted/Gpio.h"
 #include "driver/IDigitalIo.h"
 #include "driver/DigitalIo.h"
 #include "driver/Dht11.h"
@@ -12,7 +13,12 @@
 int main(void) {
     std::cout << "Hello rpi-logger!" << std::endl;
 
+#if HOSTED
+    hal::hosted::Gpio gpio;
+#else
     hal::bcm2835::Gpio gpio;
+#endif /* HOSTED */
+    
     if (!gpio.init()) {
         std::cout << "Failed to init GPIO!" << std::endl;
         return 1;
