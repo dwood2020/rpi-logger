@@ -26,6 +26,7 @@ private:
     bool receiveDeltas(std::array<unsigned long, 41>& buffer);
     void deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer);
     void bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer);
+    bool doChecksum(const std::array<uint8_t, 5>& byteBuffer);
 
     bool waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint);
 

@@ -22,22 +22,17 @@ void Dht11::poll(void) {
     std::array<unsigned int, 41> bitBuffer;
     deltasToBits(deltaBuffer, bitBuffer);
 
-    // Bits to bytes
     std::array<uint8_t, 5> bytes;
     bitsToBytes(bitBuffer, bytes);
 
-    // checksum
-    unsigned int checksum = 0;
-    for (int i = 0; i < 4; i++) {
-        checksum += bytes[i];
-    }
-    checksum &= 0xFFu;
-    if (checksum == (unsigned int)bytes[4]) {
+    if (doChecksum(bytes)) {
         std::cout << "checksum OK\n";
     }
-    printf("checksum: 0x%02X\n", checksum);
 
-
+    // TODO: DHT-11 humidity is just byte 0, ignore byte 1.
+    // DHT-22 uses both bytes.
+    // Temperature DHT-11: Just byte 2? Or Byte 2 (whole) and 3 (fraction)?
+    // Temperature DHT-22: Uses Byte 2's uppermost bit to indicate sign.
     float humidity = (float) ((bytes[0] << 8) + (bytes[1]));
     humidity /= 10.0f;
     std::cout << "humidity: " << humidity << "%\n";
@@ -119,6 +114,19 @@ void Dht11::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::arra
         byteBuffer[b] = byte;
     }
     printf("\n");
+}
+
+bool Dht11::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
+    // Checksum is sum of bytes 0-4 capped to 1 byte.
+    unsigned int checksum = 0;
+    for (int i = 0; i < 4; i++) {
+        checksum += byteBuffer[i];
+    }
+    checksum &= 0xFFu;
+    if (checksum == static_cast<unsigned int>(byteBuffer[4])) {
+        return true;
+    }
+    return false;
 }
 
 bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
