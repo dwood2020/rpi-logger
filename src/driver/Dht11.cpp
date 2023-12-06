@@ -78,7 +78,6 @@ void Dht11::requestData(void) {
 
 
 bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
-    bool levelIsOk = false;
     std::chrono::steady_clock::time_point tStart;
     std::chrono::steady_clock::time_point tEnd;
 
