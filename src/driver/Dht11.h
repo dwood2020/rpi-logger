@@ -15,8 +15,7 @@ private:
 public:
     /**
      * Init a DHT11 device.
-     * \param gpioPin The GPIO pin number the device uses as data pin.
-     * NOTE: This parameter will change in future when a GPIO abstraction class is written!
+     * \param pin The GPIO pin which the device is connected to.
     */
     Dht11(IDigitalReconfigurableIo& pin);
     virtual ~Dht11() = default;
