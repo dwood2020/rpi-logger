@@ -22,24 +22,9 @@ void Dht11::poll(void) {
     std::array<unsigned int, 41> bitBuffer;
     deltasToBits(deltaBuffer, bitBuffer);
 
-    std::cout << "bitBuffer: ";
-    for (int i = 0; i < 41; i++) {
-        std::cout << bitBuffer[i];
-    }
-    std::cout << std::endl;
-
     // Bits to bytes
     std::array<uint8_t, 5> bytes;
-
-    for (int b = 0; b < 5; b++) {
-        uint8_t byte = 0;
-        for (int i = 0; i < 8; i++) {
-            byte |= ((uint8_t)bitBuffer[1 + (8 * b) + i] << (7 - i));
-        }
-        printf("0x%02X ", byte);
-        bytes[b] = byte;
-    }
-    printf("\n");
+    bitsToBytes(bitBuffer, bytes);
 
     // checksum
     unsigned int checksum = 0;
@@ -113,8 +98,6 @@ void Dht11::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::
         unsigned long delta70 = std::labs(70 - deltaBuffer[i]);
         unsigned long delta26 = std::labs(26 - deltaBuffer[i]);
 
-        std::cout << "[" << i << "] delta: " << deltaBuffer[i] << "  delta70: " << delta70 << "  delta26: " << delta26 << std::endl;
-
         if (delta70 < delta26) {
             // 1
             bitBuffer[i] = 1;
@@ -126,6 +109,17 @@ void Dht11::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::
     }
 }
 
+void Dht11::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer) {
+    for (int b = 0; b < 5; b++) {
+        uint8_t byte = 0;
+        for (int i = 0; i < 8; i++) {
+            byte |= ((uint8_t)bitBuffer[1 + (8 * b) + i] << (7 - i));
+        }
+        printf("0x%02X ", byte);
+        byteBuffer[b] = byte;
+    }
+    printf("\n");
+}
 
 bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
     bool success = false;

@@ -10,7 +10,6 @@
 class Dht11 {
 private:
     IDigitalReconfigurableIo* pin;
-    uint64_t pollingBuffer = 0;
 
 public:
     /**
@@ -26,6 +25,7 @@ private:
     void requestData(void);
     bool receiveDeltas(std::array<unsigned long, 41>& buffer);
     void deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer);
+    void bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer);
 
     bool waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint);
 
