@@ -83,45 +83,20 @@ bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
     std::chrono::steady_clock::time_point tEnd;
 
     // Wait until sensor pulls line low.
-    for (int t = 0; t < 200; t++) {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
-        if (pin->getLevel() == hal::PinLevel::Low) {
-            levelIsOk = true;
-            break;
-        }
-    }
-    if (!levelIsOk) {
+    if (!waitForLevel(hal::PinLevel::Low, nullptr)) {
         std::cout << "Level is not OK (1)\n";
         return false;
     }
 
     // Get 40 data bits + the start sequence (which will always be read as 1).
     for (int i = 0; i < 41; i++) {
-        levelIsOk = false;
-        for (int t = 0; t < 2000; t++) {
-            if (pin->getLevel() == hal::PinLevel::High) {
-                tStart = std::chrono::steady_clock::now();
-                levelIsOk = true;
-                break;
-            }
-        }
-        if (!levelIsOk) {
+        if (!waitForLevel(hal::PinLevel::High, &tStart)) {
             std::cout << "Level is not OK (2), i = " << i << "\n";
             return false;
         }
 
-        levelIsOk = false;
-        int t = 0;
-        for (t = 0; t < 200000; t++) {
-            // std::this_thread::sleep_for(std::chrono::microseconds(1));
-            if (pin->getLevel() == hal::PinLevel::Low) {
-                tEnd = std::chrono::steady_clock::now();
-                levelIsOk = true;
-                break;
-            }
-        }
-        if (!levelIsOk) {
-            std::cout << "Level is not OK (3), t = " << t << "  i = " << i << "\n";
+        if (!waitForLevel(hal::PinLevel::Low, &tEnd)) {
+            std::cout << "Level is not OK (3), i = " << i << "\n";
             return false;
         }
 
@@ -151,3 +126,19 @@ void Dht11::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::
         }
     }
 }
+
+
+bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
+    bool success = false;
+    for (unsigned int i = 0; i < 10000; i++) {
+        if (pin->getLevel() == level) {
+            success = true;
+            break;
+        }
+    }
+    if (timePoint != nullptr) {
+        *timePoint = std::chrono::steady_clock::now();
+    }
+    return success;
+}
+

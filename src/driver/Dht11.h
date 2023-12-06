@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <array>
+#include <chrono>
 #include "driver/IDigitalIo.h"
 
 /**
@@ -26,5 +27,7 @@ private:
     void requestData(void);
     bool receiveDeltas(std::array<unsigned long, 41>& buffer);
     void deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer);
+
+    bool waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint);
 
 };
