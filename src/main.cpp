@@ -28,7 +28,7 @@ int main(void) {
     DigitalReconfigurableIo pin(gpio, 24);
     Dht22 sensor(pin);
     if (sensor.poll()) {
-        std::cout << "Humidity: " << sensor.getHumidity() << " % r.H.\n";
+        std::cout << "Humidity: " << sensor.getHumidity() << " % RH\n";
         std::cout << "Temperature: " << sensor.getTemperature() << " °C" << std::endl;
     }
     else {
