@@ -10,13 +10,13 @@
 Dht11::Dht11(IDigitalReconfigurableIo& pin): pin(&pin) {
 }
 
-void Dht11::poll(void) {
+bool Dht11::poll(void) {
     requestData();
 
     std::array<unsigned long, 41> deltaBuffer;
     if (!receiveDeltas(deltaBuffer)) {
         std::cout << "Receiving deltas failed" << std::endl;
-        return;
+        return false;
     }
 
     std::array<unsigned int, 41> bitBuffer;
@@ -25,28 +25,28 @@ void Dht11::poll(void) {
     std::array<uint8_t, 5> bytes;
     bitsToBytes(bitBuffer, bytes);
 
-    if (doChecksum(bytes)) {
-        std::cout << "checksum OK\n";
+    if (!doChecksum(bytes)) {
+        std::cout << "checksum incorrect\n";
+        return false;
     }
 
     // TODO: DHT-11 humidity is just byte 0, ignore byte 1.
     // DHT-22 uses both bytes.
     // Temperature DHT-11: Just byte 2? Or Byte 2 (whole) and 3 (fraction)?
     // Temperature DHT-22: Uses Byte 2's uppermost bit to indicate sign.
-    float humidity = (float) ((bytes[0] << 8) + (bytes[1]));
-    humidity /= 10.0f;
-    std::cout << "humidity: " << humidity << "%\n";
-
-    float temperature = (float) (((bytes[2] && 0x7Fu) << 8) + bytes[3]);
-    temperature /= 10.0f;
-    int negative = bytes[2] & 0x80u;
-    if (negative == 1) {
-        temperature = -temperature;
-    }
-    std::cout << "temperature: " << temperature << "°C" << std::endl;
+    updateHumidity(bytes);
+    updateTemperature(bytes);
+    return true;
 
 }
 
+float Dht11::getHumidity(void) const {
+    return humidity;
+}
+
+float Dht11::getTemperature(void) const {
+    return temperature;
+}
 
 void Dht11::requestData(void) {
     // Configure as output pin and pull down for 0.8-29ms.
@@ -56,6 +56,19 @@ void Dht11::requestData(void) {
     pin->configureAsInput();
 }
 
+bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
+    bool success = false;
+    for (unsigned int i = 0; i < 10000; i++) {
+        if (pin->getLevel() == level) {
+            success = true;
+            break;
+        }
+    }
+    if (timePoint != nullptr) {
+        *timePoint = std::chrono::steady_clock::now();
+    }
+    return success;
+}
 
 bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
     std::chrono::steady_clock::time_point tStart;
@@ -110,10 +123,8 @@ void Dht11::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::arra
         for (int i = 0; i < 8; i++) {
             byte |= ((uint8_t)bitBuffer[1 + (8 * b) + i] << (7 - i));
         }
-        printf("0x%02X ", byte);
         byteBuffer[b] = byte;
     }
-    printf("\n");
 }
 
 bool Dht11::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
@@ -129,17 +140,21 @@ bool Dht11::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
     return false;
 }
 
-bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
-    bool success = false;
-    for (unsigned int i = 0; i < 10000; i++) {
-        if (pin->getLevel() == level) {
-            success = true;
-            break;
-        }
+void Dht11::updateHumidity(const std::array<uint8_t, 5>& byteBuffer) {
+    float humidity = (float) ((byteBuffer[0] << 8) + (byteBuffer[1]));
+    humidity /= 10.0f;
+    this->humidity = humidity;
+    std::cout << "humidity: " << humidity << "%\n";
+}
+
+void Dht11::updateTemperature(const std::array<uint8_t, 5>& byteBuffer) {
+    float temperature = (float) (((byteBuffer[2] && 0x7Fu) << 8) + byteBuffer[3]);
+    temperature /= 10.0f;
+    int negative = byteBuffer[2] & 0x80u;
+    if (negative == 1) {
+        temperature = -temperature;
     }
-    if (timePoint != nullptr) {
-        *timePoint = std::chrono::steady_clock::now();
-    }
-    return success;
+    this->temperature = temperature;
+    std::cout << "temperature: " << temperature << "°C" << std::endl;
 }
 
