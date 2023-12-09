@@ -3,9 +3,6 @@
 #include <chrono>
 #include <array>
 
-#include <iostream>
-#include <cstdio>
-
 
 DhtBase::DhtBase(IDigitalReconfigurableIo& pin): pin(&pin) {
 }
