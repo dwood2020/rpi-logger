@@ -1,4 +1,4 @@
-#include "Dht11.h"
+#include "DhtBase.h"
 #include <thread>
 #include <chrono>
 #include <array>
@@ -7,10 +7,10 @@
 #include <cstdio>
 
 
-Dht11::Dht11(IDigitalReconfigurableIo& pin): pin(&pin) {
+DhtBase::DhtBase(IDigitalReconfigurableIo& pin): pin(&pin) {
 }
 
-bool Dht11::poll(void) {
+bool DhtBase::poll(void) {
     requestData();
 
     std::array<unsigned long, 41> deltaBuffer;
@@ -40,15 +40,15 @@ bool Dht11::poll(void) {
 
 }
 
-float Dht11::getHumidity(void) const {
+float DhtBase::getHumidity(void) const {
     return humidity;
 }
 
-float Dht11::getTemperature(void) const {
+float DhtBase::getTemperature(void) const {
     return temperature;
 }
 
-void Dht11::requestData(void) {
+void DhtBase::requestData(void) {
     // Configure as output pin and pull down for 0.8-29ms.
     pin->configureAsOutput();
     pin->setLow();
@@ -56,7 +56,7 @@ void Dht11::requestData(void) {
     pin->configureAsInput();
 }
 
-bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
+bool DhtBase::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint) {
     bool success = false;
     for (unsigned int i = 0; i < 10000; i++) {
         if (pin->getLevel() == level) {
@@ -70,7 +70,7 @@ bool Dht11::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_po
     return success;
 }
 
-bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
+bool DhtBase::receiveDeltas(std::array<unsigned long, 41>& buffer) {
     std::chrono::steady_clock::time_point tStart;
     std::chrono::steady_clock::time_point tEnd;
 
@@ -99,7 +99,7 @@ bool Dht11::receiveDeltas(std::array<unsigned long, 41>& buffer) {
 }
 
 
-void Dht11::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer) {
+void DhtBase::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer) {
     // Translate high level time deltas to bits:
     // 70us high = 1, 24-26us high = 0.
     for (int i = 0; i < 41; i++) {
@@ -117,7 +117,7 @@ void Dht11::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::
     }
 }
 
-void Dht11::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer) {
+void DhtBase::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer) {
     for (int b = 0; b < 5; b++) {
         uint8_t byte = 0;
         for (int i = 0; i < 8; i++) {
@@ -127,7 +127,7 @@ void Dht11::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::arra
     }
 }
 
-bool Dht11::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
+bool DhtBase::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
     // Checksum is sum of bytes 0-4 capped to 1 byte.
     unsigned int checksum = 0;
     for (int i = 0; i < 4; i++) {
@@ -140,14 +140,14 @@ bool Dht11::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
     return false;
 }
 
-void Dht11::updateHumidity(const std::array<uint8_t, 5>& byteBuffer) {
+void DhtBase::updateHumidity(const std::array<uint8_t, 5>& byteBuffer) {
     float humidity = (float) ((byteBuffer[0] << 8) + (byteBuffer[1]));
     humidity /= 10.0f;
     this->humidity = humidity;
     std::cout << "humidity: " << humidity << "%\n";
 }
 
-void Dht11::updateTemperature(const std::array<uint8_t, 5>& byteBuffer) {
+void DhtBase::updateTemperature(const std::array<uint8_t, 5>& byteBuffer) {
     float temperature = (float) (((byteBuffer[2] && 0x7Fu) << 8) + byteBuffer[3]);
     temperature /= 10.0f;
     int negative = byteBuffer[2] & 0x80u;

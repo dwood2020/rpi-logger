@@ -7,7 +7,7 @@
 #include "hal/hosted/Gpio.h"
 #include "driver/IDigitalIo.h"
 #include "driver/DigitalIo.h"
-#include "driver/Dht11.h"
+#include "driver/DhtBase.h"
 
 
 int main(void) {
@@ -25,7 +25,7 @@ int main(void) {
     }
 
     DigitalReconfigurableIo pin(gpio, 24);
-    Dht11 dht11(pin);
+    DhtBase dht11(pin);
     dht11.poll();
 
 
