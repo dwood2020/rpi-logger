@@ -139,22 +139,3 @@ bool DhtBase::doChecksum(const std::array<uint8_t, 5>& byteBuffer) {
     }
     return false;
 }
-
-void DhtBase::updateHumidity(const std::array<uint8_t, 5>& byteBuffer) {
-    float humidity = (float) ((byteBuffer[0] << 8) + (byteBuffer[1]));
-    humidity /= 10.0f;
-    this->humidity = humidity;
-    std::cout << "humidity: " << humidity << "%\n";
-}
-
-void DhtBase::updateTemperature(const std::array<uint8_t, 5>& byteBuffer) {
-    float temperature = (float) (((byteBuffer[2] && 0x7Fu) << 8) + byteBuffer[3]);
-    temperature /= 10.0f;
-    int negative = byteBuffer[2] & 0x80u;
-    if (negative == 1) {
-        temperature = -temperature;
-    }
-    this->temperature = temperature;
-    std::cout << "temperature: " << temperature << "°C" << std::endl;
-}
-

@@ -7,7 +7,7 @@
 #include "hal/hosted/Gpio.h"
 #include "driver/IDigitalIo.h"
 #include "driver/DigitalIo.h"
-#include "driver/DhtBase.h"
+#include "driver/Dht22.h"
 
 
 int main(void) {
@@ -18,15 +18,21 @@ int main(void) {
 #else
     hal::bcm2835::Gpio gpio;
 #endif /* HOSTED */
-    
+
     if (!gpio.init()) {
         std::cout << "Failed to init GPIO!" << std::endl;
         return 1;
     }
 
     DigitalReconfigurableIo pin(gpio, 24);
-    DhtBase dht11(pin);
-    dht11.poll();
+    Dht22 dht22(pin);
+    if (dht22.poll()) {
+        std::cout << "Humidity: " << dht22.getHumidity() << " % r.H.\n";
+        std::cout << "Temperature: " << dht22.getTemperature() << "°C" << std::endl;
+    }
+    else {
+        std::cout << "Sensor polling failed" << std::endl;
+    }
 
 
     // DigitalOutput pin(gpio, 24);
