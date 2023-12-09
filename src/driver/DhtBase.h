@@ -32,7 +32,7 @@ protected:
 
 public:
     /**
-     * Init a DHT11 device.
+     * Init a DHT device.
      * \param pin The GPIO pin which the device is connected to.
     */
     DhtBase(IDigitalReconfigurableIo& pin);
@@ -41,6 +41,7 @@ public:
     /**
      * Poll device, i.e. perform a sensor read.
      * \return \c True if successful; \c False if an error occurred.
+     * Call \c getLastError() to retrieve the error code in the latter case.
     */
     bool poll(void);
 
@@ -55,7 +56,7 @@ public:
     float getTemperature(void) const;
 
     /**
-     * \return Last error. Is refreshed on every poll() call.
+     * \return Last error. Is refreshed on every \c poll() call.
     */
     DhtError getLastError(void) const;
 
