@@ -7,6 +7,7 @@
 #include "hal/hosted/Gpio.h"
 #include "driver/IDigitalIo.h"
 #include "driver/DigitalIo.h"
+#include "driver/Dht11.h"
 #include "driver/Dht22.h"
 
 
@@ -25,10 +26,10 @@ int main(void) {
     }
 
     DigitalReconfigurableIo pin(gpio, 24);
-    Dht22 dht22(pin);
-    if (dht22.poll()) {
-        std::cout << "Humidity: " << dht22.getHumidity() << " % r.H.\n";
-        std::cout << "Temperature: " << dht22.getTemperature() << "°C" << std::endl;
+    Dht22 sensor(pin);
+    if (sensor.poll()) {
+        std::cout << "Humidity: " << sensor.getHumidity() << " % r.H.\n";
+        std::cout << "Temperature: " << sensor.getTemperature() << " °C" << std::endl;
     }
     else {
         std::cout << "Sensor polling failed" << std::endl;
