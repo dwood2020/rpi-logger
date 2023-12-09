@@ -32,7 +32,7 @@ int main(void) {
         std::cout << "Temperature: " << sensor.getTemperature() << " °C" << std::endl;
     }
     else {
-        std::cout << "Sensor polling failed" << std::endl;
+        std::cout << "Sensor polling failed. Last error: " << static_cast<int>(sensor.getLastError()) << std::endl;
     }
 
 

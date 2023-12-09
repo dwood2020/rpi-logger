@@ -15,7 +15,6 @@ bool DhtBase::poll(void) {
 
     std::array<unsigned long, 41> deltaBuffer;
     if (!receiveDeltas(deltaBuffer)) {
-        std::cout << "Receiving deltas failed" << std::endl;
         return false;
     }
 
@@ -26,16 +25,18 @@ bool DhtBase::poll(void) {
     bitsToBytes(bitBuffer, bytes);
 
     if (!doChecksum(bytes)) {
-        std::cout << "checksum incorrect\n";
+        lastError = DhtError::ChecksumIncorrect;
         return false;
     }
 
-    // TODO: DHT-11 humidity is just byte 0, ignore byte 1.
+    // DHT-11 humidity is just byte 0, ignore byte 1.
     // DHT-22 uses both bytes.
     // Temperature DHT-11: Just byte 2? Or Byte 2 (whole) and 3 (fraction)?
     // Temperature DHT-22: Uses Byte 2's uppermost bit to indicate sign.
     updateHumidity(bytes);
     updateTemperature(bytes);
+
+    lastError = DhtError::None;
     return true;
 
 }
@@ -46,6 +47,10 @@ float DhtBase::getHumidity(void) const {
 
 float DhtBase::getTemperature(void) const {
     return temperature;
+}
+
+DhtError DhtBase::getLastError(void) const {
+    return lastError;
 }
 
 void DhtBase::requestData(void) {
@@ -76,19 +81,19 @@ bool DhtBase::receiveDeltas(std::array<unsigned long, 41>& buffer) {
 
     // Wait until sensor pulls line low.
     if (!waitForLevel(hal::PinLevel::Low, nullptr)) {
-        std::cout << "Level is not OK (1)\n";
+        lastError = DhtError::LevelTimeout1;
         return false;
     }
 
     // Get 40 data bits + the start sequence (which will always be read as 1).
     for (int i = 0; i < 41; i++) {
         if (!waitForLevel(hal::PinLevel::High, &tStart)) {
-            std::cout << "Level is not OK (2), i = " << i << "\n";
+            lastError = DhtError::LevelTimeout2;
             return false;
         }
 
         if (!waitForLevel(hal::PinLevel::Low, &tEnd)) {
-            std::cout << "Level is not OK (3), i = " << i << "\n";
+            lastError = DhtError::LevelTimeout3;
             return false;
         }
 

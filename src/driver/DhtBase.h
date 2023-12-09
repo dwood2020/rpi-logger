@@ -4,16 +4,31 @@
 #include <chrono>
 #include "driver/IDigitalIo.h"
 
+
+/**
+ * DHT11/DHT22 Error conditions.
+*/
+enum class DhtError : int {
+    None = 0,
+    LevelTimeout1 = 1,
+    LevelTimeout2 = 2,
+    LevelTimeout3 = 3,
+    ChecksumIncorrect = 4
+};
+
 /**
  * DHT11/DHT22 driver base class.
  * Contains all the device read logic except humidity and temperature decoding.
  * As this differs between DHT11 and DHT22 devices, it must be implemented separately.
+ * 
+ * TODO: Use buffers of length 40!
 */
 class DhtBase {
 protected:
     IDigitalReconfigurableIo* pin;
     float humidity = 0.0f;
     float temperature = 0.0f;
+    DhtError lastError = DhtError::None;
 
 public:
     /**
@@ -38,6 +53,11 @@ public:
      * \return Last read temperature value in °C.
     */
     float getTemperature(void) const;
+
+    /**
+     * \return Last error. Is refreshed on every poll() call.
+    */
+    DhtError getLastError(void) const;
 
 private:
     void requestData(void);
