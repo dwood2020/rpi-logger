@@ -1,5 +1,4 @@
 #include "Dht22.h"
-#include <iostream>
 
 
 Dht22::Dht22(IDigitalReconfigurableIo& pin): DhtBase(pin) {
