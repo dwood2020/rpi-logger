@@ -1,5 +1,6 @@
 #pragma once
 #include <filesystem>
+#include <functional>
 #include <initializer_list>
 #include <memory>
 #include <vector>
@@ -16,7 +17,7 @@ namespace csv {
         std::vector<std::shared_ptr<Column>> columns;
         std::filesystem::path basePath;
         std::string filename = "out";
-        std::string fileExtension = "csv";
+        std::string fileExtension = ".csv";
         std::filesystem::path fullPath;
         char delimiter = ';';
         int writtenLines = 0;
@@ -34,7 +35,7 @@ namespace csv {
 
     private:
         void findFullPath(void);
-        void writeFirstLine(void);
+        void writeLine(std::function<std::string(std::shared_ptr<Column>)> func);
         void writeLineToFile(const std::string& line);
     };
 }

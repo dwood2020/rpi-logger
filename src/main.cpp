@@ -40,7 +40,7 @@ int main(void) {
 
     // Testing CsvWriter
     std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
-    csv::Writer writer({col1}, "");
+    csv::Writer writer({col1}, ".");
     writer.initialize();
     col1->logValue(100);
     writer.writeLine();

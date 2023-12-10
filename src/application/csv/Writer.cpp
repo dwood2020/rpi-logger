@@ -26,38 +26,39 @@ void csv::Writer::initialize(void) {
     findFullPath();
     std::ofstream ofs(fullPath, std::ios::out |  std::ios::trunc);
     ofs.close();
-    writeFirstLine();
+    writeLine([](std::shared_ptr<Column> col) {
+        return col->getName();
+    });
 }
 
 void csv::Writer::writeLine(void) {
-    std::stringstream ss;
-    for (unsigned int i = 0; i < columns.size() - 1; i++) {
-        ss << columns[i]->valueAsString() << " " << delimiter;
-    }
-    ss << columns.back()->valueAsString() << " \n";
-    writeLineToFile(ss.str());
+    writeLine([](std::shared_ptr<Column> col) {
+        return col->valueAsString();
+    });
 }
+
 
 void csv::Writer::findFullPath(void) {
     std::filesystem::path fullPath = basePath;
     fullPath.concat(filename);
-    fullPath.concat("." + fileExtension);
     std::filesystem::path fullPathExt = fullPath;
-    int i = 1;
+    fullPathExt.concat(fileExtension);
+    int i = 0;
     while (std::filesystem::exists(fullPathExt)) {
+        i++;
         fullPathExt = fullPath;
         fullPathExt.concat("#" + std::to_string(i));
-        fullPathExt.concat("." + fileExtension);
+        fullPathExt.concat(fileExtension);
     }
     this->fullPath = fullPathExt;
 }
 
-void csv::Writer::writeFirstLine(void) {
+void csv::Writer::writeLine(std::function<std::string(std::shared_ptr<Column>)> func) {
     std::stringstream ss;
     for (unsigned int i = 0; i < columns.size() - 1; i++) {
-        ss << columns[i]->getName() << " " << delimiter;
+        ss << func(columns[i]) << " " << delimiter;
     }
-    ss << columns.back()->getName() << " \n";
+    ss << func(columns.back()) << " \n";
     writeLineToFile(ss.str());
 }
 
