@@ -10,12 +10,12 @@ DhtBase::DhtBase(IDigitalReconfigurableIo& pin): pin(&pin) {
 bool DhtBase::poll(void) {
     requestData();
 
-    std::array<unsigned long, 41> deltaBuffer;
+    std::array<unsigned long, 40> deltaBuffer;
     if (!receiveDeltas(deltaBuffer)) {
         return false;
     }
 
-    std::array<unsigned int, 41> bitBuffer;
+    std::array<unsigned int, 40> bitBuffer;
     deltasToBits(deltaBuffer, bitBuffer);
 
     std::array<uint8_t, 5> bytes;
@@ -72,7 +72,7 @@ bool DhtBase::waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_
     return success;
 }
 
-bool DhtBase::receiveDeltas(std::array<unsigned long, 41>& buffer) {
+bool DhtBase::receiveDeltas(std::array<unsigned long, 40>& buffer) {
     std::chrono::steady_clock::time_point tStart;
     std::chrono::steady_clock::time_point tEnd;
 
@@ -82,15 +82,25 @@ bool DhtBase::receiveDeltas(std::array<unsigned long, 41>& buffer) {
         return false;
     }
 
-    // Get 40 data bits + the start sequence (which will always be read as 1).
-    for (int i = 0; i < 41; i++) {
+    // Wait for start signal
+    if (!waitForLevel(hal::PinLevel::High, nullptr)) {
+        lastError = DhtError::LevelTimeout2;
+        return false;
+    }
+    if (!waitForLevel(hal::PinLevel::Low, nullptr)) {
+        lastError = DhtError::LevelTimeout3;
+        return false;
+    }
+
+    // Get 40 data bits
+    for (int i = 0; i < 40; i++) {
         if (!waitForLevel(hal::PinLevel::High, &tStart)) {
-            lastError = DhtError::LevelTimeout2;
+            lastError = DhtError::LevelTimeout4;
             return false;
         }
 
         if (!waitForLevel(hal::PinLevel::Low, &tEnd)) {
-            lastError = DhtError::LevelTimeout3;
+            lastError = DhtError::LevelTimeout5;
             return false;
         }
 
@@ -101,10 +111,10 @@ bool DhtBase::receiveDeltas(std::array<unsigned long, 41>& buffer) {
 }
 
 
-void DhtBase::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer) {
+void DhtBase::deltasToBits(const std::array<unsigned long, 40>& deltaBuffer, std::array<unsigned int, 40>& bitBuffer) {
     // Translate high level time deltas to bits:
     // 70us high = 1, 24-26us high = 0.
-    for (int i = 0; i < 41; i++) {
+    for (int i = 0; i < 40; i++) {
         unsigned long delta70 = std::labs(70 - deltaBuffer[i]);
         unsigned long delta26 = std::labs(26 - deltaBuffer[i]);
 
@@ -119,11 +129,11 @@ void DhtBase::deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std
     }
 }
 
-void DhtBase::bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer) {
+void DhtBase::bitsToBytes(const std::array<unsigned int, 40>& bitBuffer, std::array<uint8_t, 5>& byteBuffer) {
     for (int b = 0; b < 5; b++) {
         uint8_t byte = 0;
         for (int i = 0; i < 8; i++) {
-            byte |= ((uint8_t)bitBuffer[1 + (8 * b) + i] << (7 - i));
+            byte |= ((uint8_t)bitBuffer[(8 * b) + i] << (7 - i));
         }
         byteBuffer[b] = byte;
     }

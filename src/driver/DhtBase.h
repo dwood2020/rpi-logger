@@ -13,7 +13,9 @@ enum class DhtError : int {
     LevelTimeout1 = 1,
     LevelTimeout2 = 2,
     LevelTimeout3 = 3,
-    ChecksumIncorrect = 4
+    LevelTimeout4 = 4,
+    LevelTimeout5 = 5,
+    ChecksumIncorrect = 6
 };
 
 /**
@@ -63,9 +65,9 @@ public:
 private:
     void requestData(void);
     bool waitForLevel(hal::PinLevel level, std::chrono::steady_clock::time_point* timePoint);
-    bool receiveDeltas(std::array<unsigned long, 41>& buffer);
-    void deltasToBits(const std::array<unsigned long, 41>& deltaBuffer, std::array<unsigned int, 41>& bitBuffer);
-    void bitsToBytes(const std::array<unsigned int, 41>& bitBuffer, std::array<uint8_t, 5>& byteBuffer);
+    bool receiveDeltas(std::array<unsigned long, 40>& buffer);
+    void deltasToBits(const std::array<unsigned long, 40>& deltaBuffer, std::array<unsigned int, 40>& bitBuffer);
+    void bitsToBytes(const std::array<unsigned int, 40>& bitBuffer, std::array<uint8_t, 5>& byteBuffer);
     bool doChecksum(const std::array<uint8_t, 5>& byteBuffer);
 
     virtual void updateHumidity(const std::array<uint8_t, 5>& byteBuffer) = 0;
