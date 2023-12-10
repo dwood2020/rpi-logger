@@ -19,8 +19,10 @@ target_sources(${MAIN_TARGET} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/driver/Dht22.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/driver/Dht22.h"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/application/CsvWriter.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/application/CsvWriter.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Column.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Column.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Writer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Writer.h"
 )
 
 # Further platform sources will be added here.

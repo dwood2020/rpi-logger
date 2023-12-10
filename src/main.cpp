@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <memory>
 
 #include "hal/IGpio.h"
 #include "hal/bcm2835/Gpio.h"
@@ -10,9 +11,8 @@
 #include "driver/Dht11.h"
 #include "driver/Dht22.h"
 
-#include "application/CsvWriter.h"
-#include <tuple>
-
+#include "application/csv/Writer.h"
+#include "application/csv/Column.h"
 
 int main(void) {
     std::cout << "Hello rpi-logger!" << std::endl;
@@ -39,8 +39,15 @@ int main(void) {
     }
 
     // Testing CsvWriter
-    CsvWriter<int, int, int> csvWriter(';');
-    csvWriter.log(std::make_tuple<int, int, int>(10, 12, 15));
+    std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
+    csv::Writer writer({col1}, "");
+    writer.initialize();
+    col1->logValue(100);
+    writer.writeLine();
+    col1->logValue(200);
+    writer.writeLine();
+    col1->logValue(300);
+    writer.writeLine();
 
 
     // DigitalOutput pin(gpio, 24);
