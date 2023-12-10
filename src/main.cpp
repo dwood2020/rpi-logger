@@ -11,6 +11,7 @@
 #include "driver/Dht22.h"
 
 #include "application/CsvWriter.h"
+#include <tuple>
 
 
 int main(void) {
@@ -39,6 +40,7 @@ int main(void) {
 
     // Testing CsvWriter
     CsvWriter<int, int, int> csvWriter(';');
+    csvWriter.log(std::make_tuple<int, int, int>(10, 12, 15));
 
 
     // DigitalOutput pin(gpio, 24);
