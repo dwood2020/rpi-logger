@@ -6,14 +6,15 @@
 
 
 /**
- * DHT11 device driver class.
+ * DHT22 device driver class.
 */
-class Dht11 : public DhtBase {
+class Dht22 : public DhtBase {
 public:
-    Dht11(IDigitalReconfigurableIo& pin);
-    virtual ~Dht11() = default;
+    Dht22(IDigitalReconfigurableIo& pin);
+    virtual ~Dht22() = default;
 
 private:
     void updateHumidity(const std::array<uint8_t, 5>& byteBuffer) override;
     void updateTemperature(const std::array<uint8_t, 5>& byteBuffer) override;
 };
+
