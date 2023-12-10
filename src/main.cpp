@@ -10,6 +10,8 @@
 #include "driver/Dht11.h"
 #include "driver/Dht22.h"
 
+#include "application/CsvWriter.h"
+
 
 int main(void) {
     std::cout << "Hello rpi-logger!" << std::endl;
@@ -34,6 +36,9 @@ int main(void) {
     else {
         std::cout << "Sensor polling failed. Last error: " << static_cast<int>(sensor.getLastError()) << std::endl;
     }
+
+    // Testing CsvWriter
+    CsvWriter<int, int, int> csvWriter(';');
 
 
     // DigitalOutput pin(gpio, 24);

@@ -18,6 +18,9 @@ target_sources(${MAIN_TARGET} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/driver/Dht11.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/driver/Dht22.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/driver/Dht22.h"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/CsvWriter.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/CsvWriter.h"
 )
 
 # Further platform sources will be added here.
