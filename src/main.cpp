@@ -13,6 +13,7 @@
 
 #include "application/csv/Writer.h"
 #include "application/csv/Column.h"
+#include "application/AppConfig.h"
 
 int main(void) {
     std::cout << "Hello rpi-logger!" << std::endl;
@@ -39,16 +40,25 @@ int main(void) {
     }
 
     // Testing CsvWriter
-    std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
-    csv::Writer writer({col1}, ".");
-    writer.initialize();
-    col1->logValue(100);
-    writer.writeLine();
-    col1->logValue(200);
-    writer.writeLine();
-    col1->logValue(300);
-    writer.writeLine();
+    // std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
+    // csv::Writer writer({col1}, ".");
+    // writer.initialize();
+    // col1->logValue(100);
+    // writer.writeLine();
+    // col1->logValue(200);
+    // writer.writeLine();
+    // col1->logValue(300);
+    // writer.writeLine();
 
+    // Test AppConfig
+    AppConfig appConfig;
+    try {
+        appConfig.parse(std::filesystem::current_path());
+    }catch (std::runtime_error& e) {
+        std::cout << "Could not parse AppConfig: " << e.what() << std::endl;
+        return -1;
+    }
+    std::cout << "appConfig.logIntervalSec: " << appConfig.getLogIntervalSec() << std::endl;
 
     // DigitalOutput pin(gpio, 24);
     // for (int i = 0; i < 10; i++) {
