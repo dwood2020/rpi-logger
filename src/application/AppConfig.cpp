@@ -45,16 +45,22 @@ std::string AppConfig::toString(void) const {
     ss << "\tlogIntervalSec: " << logIntervalSec << "\n";
     ss << "\tcsvOutputDir: " << csvOutputDir << "\n";
     ss << "\tdht11Pins: [";
-    for (int i = 0; i < dht11Pins.size() - 1; i++) {
-        ss << dht11Pins[i] << ", ";
+    if (!dht11Pins.empty()) {
+        for (int i = 0; i < (dht11Pins.size() - 1); i++) {
+            ss << dht11Pins[i] << ", ";
+        }
+        ss << dht11Pins.back();
     }
-    ss << dht11Pins.back() << "]\n";
+    ss << "]\n";
 
     ss << "\tdht22Pins: [";
-    for (int i = 0; i < dht22Pins.size() - 1; i++) {
-        ss << dht22Pins[i] << ", ";
+    if (!dht22Pins.empty()) {
+        for (int i = 0; i < (dht22Pins.size() - 1); i++) {
+            ss << dht22Pins[i] << ", ";
+        }
+        ss << dht22Pins.back();
     }
-    ss << dht22Pins.back() << "]\n";
+    ss << "]\n";
     return ss.str();
 }
 

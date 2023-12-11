@@ -58,7 +58,6 @@ int main(void) {
         std::cout << "Could not parse AppConfig: " << e.what() << std::endl;
         return -1;
     }
-    // std::cout << "appConfig.logIntervalSec: " << appConfig.getLogIntervalSec() << std::endl;
     std::cout << appConfig.toString() << std::endl;
 
     // DigitalOutput pin(gpio, 24);
