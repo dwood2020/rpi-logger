@@ -23,6 +23,9 @@ target_sources(${MAIN_TARGET} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Column.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Writer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/application/csv/Writer.h"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/AppConfig.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/application/AppConfig.h"
 )
 
 # Further platform sources will be added here.
