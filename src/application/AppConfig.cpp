@@ -1,6 +1,7 @@
 #include "AppConfig.h"
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include "nlohmann/json.hpp"
 
 
@@ -37,6 +38,26 @@ void AppConfig::parse(std::filesystem::path configFileDir) {
         }
     }
 }
+
+std::string AppConfig::toString(void) const {
+    std::stringstream ss;
+    ss << "AppConfig:\n";
+    ss << "\tlogIntervalSec: " << logIntervalSec << "\n";
+    ss << "\tcsvOutputDir: " << csvOutputDir << "\n";
+    ss << "\tdht11Pins: [";
+    for (int i = 0; i < dht11Pins.size() - 1; i++) {
+        ss << dht11Pins[i] << ", ";
+    }
+    ss << dht11Pins.back() << "]\n";
+
+    ss << "\tdht22Pins: [";
+    for (int i = 0; i < dht22Pins.size() - 1; i++) {
+        ss << dht22Pins[i] << ", ";
+    }
+    ss << dht22Pins.back() << "]\n";
+    return ss.str();
+}
+
 
 const std::vector<hal::PinNumber_t>& AppConfig::getDht11Pins(void) const {
     return dht11Pins;

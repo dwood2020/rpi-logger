@@ -19,6 +19,7 @@ public:
     virtual ~AppConfig() = default;
 
     void parse(std::filesystem::path configFileDir);
+    std::string toString(void) const;
 
     const std::vector<hal::PinNumber_t>& getDht11Pins(void) const;
     const std::vector<hal::PinNumber_t>& getDht22Pins(void) const;
