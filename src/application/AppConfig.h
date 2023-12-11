@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <filesystem>
 #include "hal/IGpio.h"
 
 
@@ -17,7 +18,7 @@ public:
     AppConfig() = default;
     virtual ~AppConfig() = default;
 
-    void parse(std::string_view configFileDir);
+    void parse(std::filesystem::path configFileDir);
 
     const std::vector<hal::PinNumber_t>& getDht11Pins(void) const;
     const std::vector<hal::PinNumber_t>& getDht22Pins(void) const;

@@ -4,7 +4,7 @@
 #include "nlohmann/json.hpp"
 
 
-void AppConfig::parse(std::string_view configFileDir) {
+void AppConfig::parse(std::filesystem::path configFileDir) {
     std::filesystem::path filepath = configFileDir;
     if (!std::filesystem::is_directory(filepath)) {
         filepath = filepath.parent_path();
