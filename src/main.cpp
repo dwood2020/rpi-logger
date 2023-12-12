@@ -54,7 +54,7 @@ int main(void) {
     AppConfig appConfig;
     try {
         appConfig.parse(std::filesystem::current_path());
-    }catch (std::runtime_error& e) {
+    } catch (std::runtime_error& e) {
         std::cout << "Could not parse AppConfig: " << e.what() << std::endl;
         return -1;
     }
