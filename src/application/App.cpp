@@ -7,6 +7,12 @@
 App::App(hal::IGpio& gpio): gpio(&gpio) {
 }
 
+App::~App() {
+    for (auto pin : sensorPins) {
+        delete pin;
+    }
+}
+
 bool App::init(void) {
     Log::init(std::filesystem::current_path());
 
@@ -33,16 +39,39 @@ bool App::init(void) {
         return false;
     }
 
-    for (const hal::PinNumber_t pin : config.getDht11Pins()) {
-        // TODO: Check if pin number is already given
-        sensorPins.push_back(DigitalReconfigurableIo(*gpio, pin));  // TODO: This causes compiler error. Uses copy-constructor.
-        // TODO: Continue here - Maybe use smart pointers? Is probably better than this
-        dht11Sensors.push_back(Dht11(sensorPins.back()));
+    for (const hal::PinNumber_t pinNr : config.getDht11Pins()) {
+        if (pinNumberExists(pinNr)) {
+            LOG_WARN("Pin number %v already exists. Skipping.", pinNr);
+            continue;
+        }
+
+        auto pin = new DigitalReconfigurableIo(*gpio, pinNr);
+        sensorPins.push_back(pin);
+        dht11Sensors.push_back(Dht11(*pin));
     }
 
+    for (const hal::PinNumber_t pinNr : config.getDht22Pins()) {
+        if (pinNumberExists(pinNr)) {
+            LOG_WARN("Pin number %v already exists. Skipping.", pinNr);
+            continue;
+        }
+
+        auto pin = new DigitalReconfigurableIo(*gpio, pinNr);
+        sensorPins.push_back(pin);
+        dht22Sensors.push_back(Dht22(*pin));
+    }
 
     return true;
 }
 
 void App::run(void) {
+}
+
+bool App::pinNumberExists(hal::PinNumber_t pinNumber) {
+    for (auto existingPin : sensorPins) {
+        if (existingPin->getNumber() == pinNumber) {
+            return true;
+        }
+    }
+    return false;
 }
