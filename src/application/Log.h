@@ -1,15 +1,15 @@
 #pragma once
-#include <memory>
+#include <filesystem>
 #include "easylogging++.h"
 
 
 class Log final {
 public:
-    static void Init(void);
-    static el::Logger* GetLoggerInstance(void);
+    static void init(const std::filesystem::path& logfilePath);
+    static el::Logger* getLoggerInstance(void);
 };
 
 
-#define LOG_INFO(...) Log::GetLoggerInstance()->info(__VA_ARGS__)
-#define LOG_WARN(...) Log::GetLoggerInstance()->warn(__VA_ARGS__)
-#define LOG_ERROR(...) Log::GetLoggerInstance()->error(__VA_ARGS__)
+#define LOG_INFO(...) Log::getLoggerInstance()->info(__VA_ARGS__)
+#define LOG_WARN(...) Log::getLoggerInstance()->warn(__VA_ARGS__)
+#define LOG_ERROR(...) Log::getLoggerInstance()->error(__VA_ARGS__)

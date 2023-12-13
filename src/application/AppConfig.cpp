@@ -37,6 +37,9 @@ void AppConfig::parse(std::filesystem::path configFileDir) {
             }
         }
     }
+    if (cfgData.contains("testMode")) {
+        this->testMode = cfgData["testMode"];
+    }
 }
 
 std::string AppConfig::toString(void) const {
@@ -61,6 +64,7 @@ std::string AppConfig::toString(void) const {
         ss << dht22Pins.back();
     }
     ss << "]\n";
+    ss << "\ttestMode: " << ((testMode) ? "true" : "false") << "\n";
     return ss.str();
 }
 
@@ -79,4 +83,8 @@ int AppConfig::getLogIntervalSec(void) const {
 
 std::string AppConfig::getCsvOutputDir(void) const {
     return std::move(csvOutputDir);
+}
+
+bool AppConfig::getTestMode(void) const {
+    return testMode;
 }

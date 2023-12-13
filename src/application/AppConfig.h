@@ -11,6 +11,7 @@ private:
     std::vector<hal::PinNumber_t> dht22Pins{};
     int logIntervalSec = 60;
     std::string csvOutputDir;
+    bool testMode = true;
 
 public:
     static constexpr auto appConfigFileName = "rpiLoggerConfig.json";
@@ -25,4 +26,5 @@ public:
     const std::vector<hal::PinNumber_t>& getDht22Pins(void) const;
     int getLogIntervalSec(void) const;
     std::string getCsvOutputDir(void) const;
+    bool getTestMode(void) const;
 };

@@ -14,9 +14,13 @@
 #include "application/csv/Writer.h"
 #include "application/csv/Column.h"
 #include "application/AppConfig.h"
+#include "application/Log.h"
+
+#include "application/App.h"
+
 
 int main(void) {
-    std::cout << "Hello rpi-logger!" << std::endl;
+
 
 #if HOSTED
     hal::hosted::Gpio gpio;
@@ -24,41 +28,45 @@ int main(void) {
     hal::bcm2835::Gpio gpio;
 #endif /* HOSTED */
 
-    if (!gpio.init()) {
-        std::cout << "Failed to init GPIO!" << std::endl;
-        return 1;
-    }
+    App app(gpio);
+    app.init();
 
-    DigitalReconfigurableIo pin(gpio, 24);
-    Dht22 sensor(pin);
-    if (sensor.poll()) {
-        std::cout << "Humidity: " << sensor.getHumidity() << " % RH\n";
-        std::cout << "Temperature: " << sensor.getTemperature() << " °C" << std::endl;
-    }
-    else {
-        std::cout << "Sensor polling failed. Last error: " << static_cast<int>(sensor.getLastError()) << std::endl;
-    }
 
-    // Testing CsvWriter
-    // std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
-    // csv::Writer writer({col1}, ".");
-    // writer.initialize();
-    // col1->logValue(100);
-    // writer.writeLine();
-    // col1->logValue(200);
-    // writer.writeLine();
-    // col1->logValue(300);
-    // writer.writeLine();
+    // if (!gpio.init()) {
+    //     std::cout << "Failed to init GPIO!" << std::endl;
+    //     return 1;
+    // }
 
-    // Test AppConfig
-    AppConfig appConfig;
-    try {
-        appConfig.parse(std::filesystem::current_path());
-    } catch (std::runtime_error& e) {
-        std::cout << "Could not parse AppConfig: " << e.what() << std::endl;
-        return -1;
-    }
-    std::cout << appConfig.toString() << std::endl;
+    // DigitalReconfigurableIo pin(gpio, 24);
+    // Dht22 sensor(pin);
+    // if (sensor.poll()) {
+    //     std::cout << "Humidity: " << sensor.getHumidity() << " % RH\n";
+    //     std::cout << "Temperature: " << sensor.getTemperature() << " °C" << std::endl;
+    // }
+    // else {
+    //     std::cout << "Sensor polling failed. Last error: " << static_cast<int>(sensor.getLastError()) << std::endl;
+    // }
+
+    // // Testing CsvWriter
+    // // std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
+    // // csv::Writer writer({col1}, ".");
+    // // writer.initialize();
+    // // col1->logValue(100);
+    // // writer.writeLine();
+    // // col1->logValue(200);
+    // // writer.writeLine();
+    // // col1->logValue(300);
+    // // writer.writeLine();
+
+    // // Test AppConfig
+    // AppConfig appConfig;
+    // try {
+    //     appConfig.parse(std::filesystem::current_path());
+    // } catch (std::runtime_error& e) {
+    //     std::cout << "Could not parse AppConfig: " << e.what() << std::endl;
+    //     return -1;
+    // }
+    // std::cout << appConfig.toString() << std::endl;
 
     // DigitalOutput pin(gpio, 24);
     // for (int i = 0; i < 10; i++) {
