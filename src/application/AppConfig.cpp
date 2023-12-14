@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include "nlohmann/json.hpp"
+#include "Log.h"
 
 
 void AppConfig::parse(std::filesystem::path configFileDir) {
@@ -30,10 +31,16 @@ void AppConfig::parse(std::filesystem::path configFileDir) {
         }
     }
     if (cfgData.contains("dht22Pins")) {
-        auto dht22Pins = cfgData["dht22Pins"];
-        if (dht22Pins.is_array()) {
-            for (const auto& pin : dht22Pins) {
-                this->dht22Pins.push_back(pin);
+        auto dht22Configs = cfgData["dht22Pins"];
+        if (dht22Configs.is_array()) {
+            for (const auto& cfg : dht22Configs) {
+
+                if (cfg.contains("pinNumber") && cfg.contains("logName")) {
+                    LOG_INFO("pinNumber: %v", cfg["pinNumber"]);
+                    LOG_INFO("logName: %v", cfg["logName"]);
+                    SensorConfig cfgInstance(static_cast<hal::PinNumber_t>(cfg["pinNumber"]), std::string(cfg["logName"]));
+                    this->dht22Configs.push_back(cfgInstance);
+                }
             }
         }
     }
@@ -57,11 +64,11 @@ std::string AppConfig::toString(void) const {
     ss << "]\n";
 
     ss << "\tdht22Pins: [";
-    if (!dht22Pins.empty()) {
-        for (int i = 0; i < (dht22Pins.size() - 1); i++) {
-            ss << dht22Pins[i] << ", ";
+    if (!dht22Configs.empty()) {
+        for (int i = 0; i < (dht22Configs.size() - 1); i++) {
+            ss << dht22Configs[i] << ", ";
         }
-        ss << dht22Pins.back();
+        ss << dht22Configs.back();
     }
     ss << "]\n";
     ss << "\ttestMode: " << ((testMode) ? "true" : "false") << "\n";
@@ -73,8 +80,8 @@ const std::vector<hal::PinNumber_t>& AppConfig::getDht11Pins(void) const {
     return dht11Pins;
 }
 
-const std::vector<hal::PinNumber_t>& AppConfig::getDht22Pins(void) const {
-    return dht22Pins;
+const std::vector<SensorConfig>& AppConfig::getDht22Configs(void) const {
+    return dht22Configs;
 }
 
 int AppConfig::getLogIntervalSec(void) const {
