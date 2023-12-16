@@ -38,8 +38,6 @@ private:
     std::vector<Dht11SensorPath> dht11SensorPaths;
     std::vector<Dht22SensorPath> dht22SensorPaths;
     int logIntervalSec = 0;
-    std::filesystem::path outputPath;
-
     std::unique_ptr<csv::Writer> csvWriter;
 
 public:

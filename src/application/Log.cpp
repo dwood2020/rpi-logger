@@ -9,7 +9,9 @@ void Log::init(const std::filesystem::path& logfilePath) {
     cfg.setGlobally(el::ConfigurationType::Format, "%datetime{%H:%m:%s.%g} %level %msg");
     if (std::filesystem::exists(logfilePath)) {
         cfg.setGlobally(el::ConfigurationType::ToFile, "true");
-        cfg.setGlobally(el::ConfigurationType::Filename, logfilePath.string().c_str());
+        auto path = logfilePath;
+        path.append("rpiLoggerAppLog.txt");
+        cfg.setGlobally(el::ConfigurationType::Filename, path.string().c_str());
     }
 
     el::Loggers::setDefaultConfigurations(cfg, true);

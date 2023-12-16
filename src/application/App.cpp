@@ -32,7 +32,6 @@ bool App::init(void) {
         return false;
     }
 
-    this->outputPath = outputPath;
     Log::init(outputPath);
 
     if (!gpio->init()) {
