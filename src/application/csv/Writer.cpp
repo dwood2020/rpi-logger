@@ -4,11 +4,14 @@
 #include <sstream>
 
 
-csv::Writer::Writer(std::initializer_list<std::shared_ptr<Column>> columns, std::string_view outputDir): columns(columns), basePath(outputDir) {
+csv::Writer::Writer(std::initializer_list<std::shared_ptr<Column>> columns, const std::filesystem::path& outputDir): 
+columns(columns), basePath(outputDir) {
     if (!std::filesystem::exists(basePath)) {
         throw std::invalid_argument("Directory does not exist");
     }
 }
+
+csv::Writer::Writer(const std::filesystem::path& outputDir): Writer({}, outputDir) {}
 
 void csv::Writer::setFilename(const std::string& filename) {
     this->filename = filename;
@@ -20,6 +23,10 @@ void csv::Writer::setFileExtension(const std::string& fileExtension) {
 
 void csv::Writer::setDelimiter(char delimiter) {
     this->delimiter = delimiter;
+}
+
+void csv::Writer::addColumn(std::shared_ptr<Column> column) {
+    columns.push_back(column);
 }
 
 void csv::Writer::initialize(void) {

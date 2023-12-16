@@ -23,12 +23,14 @@ namespace csv {
         int writtenLines = 0;
 
     public:
-        Writer(std::initializer_list<std::shared_ptr<Column>> columns, std::string_view outputDir);
+        Writer(std::initializer_list<std::shared_ptr<Column>> columns, const std::filesystem::path& outputDir);
+        Writer(const std::filesystem::path& outputDir);
         virtual ~Writer() = default;
 
         void setFilename(const std::string& filename);
         void setFileExtension(const std::string& fileExtension);
         void setDelimiter(char delimiter);
+        void addColumn(std::shared_ptr<Column> column);
 
         void initialize(void);
         void writeLine(void);
