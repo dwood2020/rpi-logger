@@ -24,6 +24,7 @@ bool App::init(void) {
         LOG_ERROR("Could not parse '%v': %v", config.appConfigFileName, e.what());
         return false;
     }
+    LOG_INFO("%v", config.toString());
 
     std::filesystem::path outputPath = std::filesystem::path(config.getCsvOutputDir());
     if (!std::filesystem::exists(outputPath)) {
@@ -39,26 +40,27 @@ bool App::init(void) {
         return false;
     }
 
-    for (const hal::PinNumber_t pinNr : config.getDht11Pins()) {
-        if (pinNumberExists(pinNr)) {
-            LOG_WARN("Pin number %v already exists. Skipping.", pinNr);
+    for (const SensorConfig cfg : config.getDht11Configs()) {
+        if (pinNumberExists(cfg.pinNumber)) {
+            LOG_WARN("Pin number %v already exists. Skipping.", cfg.pinNumber);
             continue;
         }
 
-        auto pin = new DigitalReconfigurableIo(*gpio, pinNr);
+        auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
         dht11Sensors.push_back(Dht11(*pin));
     }
 
-    for (const hal::PinNumber_t pinNr : config.getDht22Pins()) {
-        if (pinNumberExists(pinNr)) {
-            LOG_WARN("Pin number %v already exists. Skipping.", pinNr);
+    for (const SensorConfig cfg : config.getDht22Configs()) {
+        if (pinNumberExists(cfg.pinNumber)) {
+            LOG_WARN("Pin number %v already exists. Skipping.", cfg.pinNumber);
             continue;
         }
 
-        auto pin = new DigitalReconfigurableIo(*gpio, pinNr);
+        auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
         dht22Sensors.push_back(Dht22(*pin));
+        LOG_INFO("Added DHT22 config: %v, %v", cfg.pinNumber, cfg.logName);
     }
 
     return true;

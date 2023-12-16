@@ -21,7 +21,7 @@ public:
 
 class AppConfig {
 private:
-    std::vector<hal::PinNumber_t> dht11Pins{};
+    std::vector<SensorConfig> dht11Configs{};
     std::vector<SensorConfig> dht22Configs{};
     int logIntervalSec = 60;
     std::string csvOutputDir;
@@ -36,7 +36,7 @@ public:
     void parse(std::filesystem::path configFileDir);
     std::string toString(void) const;
 
-    const std::vector<hal::PinNumber_t>& getDht11Pins(void) const;
+    const std::vector<SensorConfig>& getDht11Configs(void) const;
     const std::vector<SensorConfig>& getDht22Configs(void) const;
     int getLogIntervalSec(void) const;
     std::string getCsvOutputDir(void) const;
