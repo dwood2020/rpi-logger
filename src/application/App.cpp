@@ -49,6 +49,7 @@ bool App::init(void) {
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
         dht11Sensors.push_back(Dht11(*pin));
+        LOG_INFO("Added DHT11 config: pin %v, log name '%v'", cfg.pinNumber, cfg.logName);
     }
 
     for (const SensorConfig cfg : config.getDht22Configs()) {
@@ -60,7 +61,7 @@ bool App::init(void) {
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
         dht22Sensors.push_back(Dht22(*pin));
-        LOG_INFO("Added DHT22 config: %v, %v", cfg.pinNumber, cfg.logName);
+        LOG_INFO("Added DHT22 config: pin %v, log name '%v'", cfg.pinNumber, cfg.logName);
     }
 
     return true;
