@@ -15,12 +15,16 @@
 struct Dht11SensorPath {
     Dht11 sensor;
     std::shared_ptr<csv::Column> column;
+
+    Dht11SensorPath(const Dht11& sensor, std::shared_ptr<csv::Column> column): sensor(sensor), column(column) {}
 };
 
 
 struct Dht22SensorPath {
     Dht22 sensor;
     std::shared_ptr<csv::Column> column;
+
+    Dht22SensorPath(const Dht22& sensor, std::shared_ptr<csv::Column> column): sensor(sensor), column(column) {}
 };
 
 
@@ -31,10 +35,12 @@ class App final {
 private:
     hal::IGpio* gpio;
     std::list<DigitalReconfigurableIo*> sensorPins;
-    std::vector<Dht11> dht11Sensors;
-    std::vector<Dht22> dht22Sensors;
+    std::vector<Dht11SensorPath> dht11SensorPaths;
+    std::vector<Dht22SensorPath> dht22SensorPaths;
     int logIntervalSec = 0;
     std::filesystem::path outputPath;
+
+    std::unique_ptr<csv::Writer> csvWriter;
 
 public:
     App(hal::IGpio& gpio);

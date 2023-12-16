@@ -40,6 +40,8 @@ bool App::init(void) {
         return false;
     }
 
+    csvWriter = std::make_unique<csv::Writer>(outputPath);
+
     for (const SensorConfig cfg : config.getDht11Configs()) {
         if (pinNumberExists(cfg.pinNumber)) {
             LOG_WARN("Pin number %v already exists. Skipping.", cfg.pinNumber);
@@ -48,8 +50,11 @@ bool App::init(void) {
 
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
-        dht11Sensors.push_back(Dht11(*pin));
-        LOG_INFO("Added DHT11 config: pin %v, log name '%v'", cfg.pinNumber, cfg.logName);
+        auto column = std::make_shared<csv::Column>(cfg.logName);
+        Dht11SensorPath path(Dht11(*pin), column);
+        dht11SensorPaths.push_back(path);
+        csvWriter->addColumn(column);
+        LOG_INFO("Added DHT11 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
     }
 
     for (const SensorConfig cfg : config.getDht22Configs()) {
@@ -60,8 +65,11 @@ bool App::init(void) {
 
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
-        dht22Sensors.push_back(Dht22(*pin));
-        LOG_INFO("Added DHT22 config: pin %v, log name '%v'", cfg.pinNumber, cfg.logName);
+        auto column = std::make_shared<csv::Column>(cfg.logName);
+        Dht22SensorPath path(Dht22(*pin), column);
+        dht22SensorPaths.push_back(path);
+        csvWriter->addColumn(column);
+        LOG_INFO("Added DHT22 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
     }
 
     return true;
