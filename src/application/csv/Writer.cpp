@@ -21,10 +21,6 @@ void csv::Writer::setFilename(const std::string& filename) {
     this->filename = filename;
 }
 
-void csv::Writer::setFileExtension(const std::string& fileExtension) {
-    this->fileExtension = fileExtension;
-}
-
 void csv::Writer::setDelimiter(char delimiter) {
     this->delimiter = delimiter;
 }
@@ -67,12 +63,19 @@ void csv::Writer::findFullPath(void) {
 }
 
 void csv::Writer::writeLine(std::function<std::string(std::shared_ptr<ColumnBase>)> func) {
+    if (writtenLines > maxLinesPerFile) {
+        // Find new file path + init file with column header line.
+        writtenLines = 0;
+        initialize();
+    }
+
     std::stringstream ss;
     for (unsigned int i = 0; i < columns.size() - 1; i++) {
         ss << func(columns[i]) << delimiter << " ";
     }
     ss << func(columns.back()) << " \n";
     writeLineToFile(ss.str());
+    writtenLines++;
 }
 
 void csv::Writer::writeLineToFile(const std::string& line) {

@@ -23,12 +23,13 @@ namespace csv {
         int writtenLines = 0;
 
     public:
+        static constexpr int maxLinesPerFile = 100000;
+
         Writer(std::initializer_list<std::shared_ptr<ColumnBase>> columns, const std::filesystem::path& outputDir);
         Writer(const std::filesystem::path& outputDir);
         virtual ~Writer() = default;
 
         void setFilename(const std::string& filename);
-        void setFileExtension(const std::string& fileExtension);
         void setDelimiter(char delimiter);
         void addColumn(std::shared_ptr<Column> column);
 

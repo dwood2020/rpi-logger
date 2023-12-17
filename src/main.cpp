@@ -37,10 +37,10 @@ int main(void) {
     auto column1 = std::make_shared<csv::Column>("column1");
     csv::Writer writer({column1}, std::filesystem::current_path());
     writer.initialize();
-    column1->logValue(100);
-    writer.writeLine();
-    column1->logValue(200);
-    writer.writeLine();
+    for (int i = 0; i < 200000; i++) {
+        column1->logValue(i);
+        writer.writeLine();
+    }
 
     // if (!gpio.init()) {
     //     std::cout << "Failed to init GPIO!" << std::endl;
