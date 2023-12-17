@@ -85,9 +85,18 @@ void App::run(void) {
         return;
     }
 
+    // We use t0 as reference for every tIntervalEnd to prevent a drift.
+    std::chrono::time_point t0 = std::chrono::steady_clock::now();
+    unsigned long loopCount = 0;
+
     while (true) {
-        std::chrono::time_point tStart = std::chrono::steady_clock::now();
-        std::chrono::time_point tIntervalEnd = tStart + logIntervalSec;
+        loopCount++;
+        std::chrono::time_point tIntervalEnd = t0 + logIntervalSec * loopCount;
+        if (loopCount == std::numeric_limits<unsigned long>::max()) {
+            // Reset t0 and do a "manual" wrap-around so that tIntervalEnd is never calculated with loopCount = 0.
+            t0 = std::chrono::steady_clock::now();
+            loopCount = 0;
+        }
 
         // Do business
         LOG_INFO("DOING BUSINESS .....");
