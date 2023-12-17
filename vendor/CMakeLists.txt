@@ -27,6 +27,7 @@ target_include_directories(${LIB_JSON_TARGET} INTERFACE
 set(LIB_EASYLOGGINGPP_TARGET easyloggingpp)
 add_library(${LIB_EASYLOGGINGPP_TARGET} STATIC easyloggingpp/src/easylogging++.cc)
 set_property(TARGET ${LIB_EASYLOGGINGPP_TARGET} PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_compile_definitions(${LIB_EASYLOGGINGPP_TARGET} PUBLIC "-DELPP_NO_DEFAULT_LOG_FILE")
 target_include_directories(${LIB_EASYLOGGINGPP_TARGET} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/easyloggingpp/src
 )
