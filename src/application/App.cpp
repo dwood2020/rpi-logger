@@ -119,7 +119,7 @@ void App::testSensorPath(const DhtSensorPath& sensorPath) {
         }
         else {
             LOG_ERROR("Sensor path '%v' reading #%v failed. Error code %v", 
-                sensorPath.column, i, static_cast<int>(sensorPath.sensor->getLastError()));
+                sensorPath.column->getName(), i, static_cast<int>(sensorPath.sensor->getLastError()));
             failedReadings++;
         }
     }
