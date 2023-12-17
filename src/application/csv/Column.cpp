@@ -34,5 +34,5 @@ std::string csv::Column::valueAsString(void) {
 }
 
 std::string csv::Column::getName(void) {
-    return std::move(name);
+    return name;
 }
