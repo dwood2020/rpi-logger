@@ -4,14 +4,24 @@
 
 namespace csv {
 
-    /**
-     * CSV Column class.
-    */
-    class Column {
-    private:
+    class ColumnBase {
+    protected:
         std::string name;
         std::string value;
 
+    public:
+        ColumnBase(const std::string& name);
+        virtual ~ColumnBase() = default;
+
+        std::string getName(void);
+        std::string valueAsString(void);
+    };
+
+
+    /**
+     * Standard CSV Column class, used for logging.
+    */
+    class Column : public ColumnBase {
     public:
         Column(const std::string& name);
         virtual ~Column() = default;
@@ -21,9 +31,17 @@ namespace csv {
         void logValue(float value);
         void logValue(const std::string& value);
         void logValue(bool value);
-
-        std::string getName(void);
-        std::string valueAsString(void);
     };
 
+
+    class TimestampColumn : public ColumnBase {
+    public:
+        TimestampColumn(): ColumnBase("Timestamp") {}
+        virtual ~TimestampColumn() = default;
+
+        void update(void);
+
+    private:
+        std::string makeDateTimeString(void);
+    };
 }

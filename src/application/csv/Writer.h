@@ -14,7 +14,7 @@ namespace csv {
     */
     class Writer {
     private:
-        std::vector<std::shared_ptr<Column>> columns;
+        std::vector<std::shared_ptr<ColumnBase>> columns;
         std::filesystem::path basePath;
         std::string filename = "out";
         std::string fileExtension = ".csv";
@@ -23,7 +23,7 @@ namespace csv {
         int writtenLines = 0;
 
     public:
-        Writer(std::initializer_list<std::shared_ptr<Column>> columns, const std::filesystem::path& outputDir);
+        Writer(std::initializer_list<std::shared_ptr<ColumnBase>> columns, const std::filesystem::path& outputDir);
         Writer(const std::filesystem::path& outputDir);
         virtual ~Writer() = default;
 
@@ -37,7 +37,7 @@ namespace csv {
 
     private:
         void findFullPath(void);
-        void writeLine(std::function<std::string(std::shared_ptr<Column>)> func);
+        void writeLine(std::function<std::string(std::shared_ptr<ColumnBase>)> func);
         void writeLineToFile(const std::string& line);
     };
 }
