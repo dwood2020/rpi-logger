@@ -1,5 +1,8 @@
 #include "App.h"
+#include <chrono>
 #include <filesystem>
+#include <thread>
+#include <vector>
 #include "AppConfig.h"
 #include "Log.h"
 
@@ -50,8 +53,7 @@ bool App::init(void) {
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
         auto column = std::make_shared<csv::Column>(cfg.logName);
-        Dht11SensorPath path(Dht11(*pin), column);
-        dht11SensorPaths.push_back(path);
+        dht11SensorPaths.emplace_back(std::make_unique<Dht11>(*pin), column);
         csvWriter->addColumn(column);
         LOG_INFO("Added DHT11 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
     }
@@ -65,16 +67,69 @@ bool App::init(void) {
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
         auto column = std::make_shared<csv::Column>(cfg.logName);
-        Dht22SensorPath path(Dht22(*pin), column);
-        dht22SensorPaths.push_back(path);
+        dht22SensorPaths.emplace_back(std::make_unique<Dht22>(*pin), column);
         csvWriter->addColumn(column);
         LOG_INFO("Added DHT22 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
     }
+
+    testMode = config.getTestMode();
 
     return true;
 }
 
 void App::run(void) {
+    if (testMode) {
+        runTest();
+        return;
+    }
+
+
+}
+
+void App::runTest(void) {
+    LOG_INFO("Running in test mode.");
+
+    if (dht11SensorPaths.empty()) {
+        LOG_INFO("No DHT11 sensors configured.");
+    }
+    else {
+        for (const auto& dht11path : dht11SensorPaths) {
+            testSensorPath(dht11path);
+        }
+    }
+
+    if (dht22SensorPaths.empty()) {
+        LOG_INFO("No DHT22 sensors configured.");
+    }
+    else {
+        for (const auto& dht22Path: dht22SensorPaths) {
+            testSensorPath(dht22Path);
+        }
+    }
+}
+
+void App::testSensorPath(const DhtSensorPath& sensorPath) {
+    int failedReadings = 0;
+    std::vector<DhtSensorReading> readings(10);
+    for (int i = 0; i < 10; i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        if (sensorPath.sensor->poll()) {
+            DhtSensorReading reading(sensorPath.sensor->getHumidity(), sensorPath.sensor->getTemperature());
+            readings.push_back(reading);
+        }
+        else {
+            LOG_ERROR("Sensor path '%v' reading #%v failed. Error code %v", 
+                sensorPath.column, i, static_cast<int>(sensorPath.sensor->getLastError()));
+            failedReadings++;
+        }
+    }
+    DhtSensorReading averageReading;
+    for (int i = 0; i < (10 - failedReadings); i++) {
+        averageReading.humidity += readings[i].humidity;
+        averageReading.temperature += readings[i].temperature;
+    }
+    averageReading.humidity /= static_cast<float>(10 - failedReadings);
+    averageReading.temperature /= static_cast<float>(10 - failedReadings);
 }
 
 bool App::pinNumberExists(hal::PinNumber_t pinNumber) {

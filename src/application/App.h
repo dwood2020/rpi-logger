@@ -12,19 +12,21 @@
 #include "application/csv/Writer.h"
 
 
-struct Dht11SensorPath {
-    Dht11 sensor;
+struct DhtSensorPath {
+    std::unique_ptr<DhtBase> sensor;
     std::shared_ptr<csv::Column> column;
 
-    Dht11SensorPath(const Dht11& sensor, std::shared_ptr<csv::Column> column): sensor(sensor), column(column) {}
+    DhtSensorPath(std::unique_ptr<DhtBase> sensor, std::shared_ptr<csv::Column> column): sensor(std::move(sensor)), column(column) {}
+    DhtSensorPath(DhtSensorPath&& other) noexcept: sensor(std::move(other.sensor)), column(std::move(other.column)) {}
 };
 
 
-struct Dht22SensorPath {
-    Dht22 sensor;
-    std::shared_ptr<csv::Column> column;
+struct DhtSensorReading {
+    float humidity = 0.0f;
+    float temperature = 0.0f;
 
-    Dht22SensorPath(const Dht22& sensor, std::shared_ptr<csv::Column> column): sensor(sensor), column(column) {}
+    DhtSensorReading() = default;
+    DhtSensorReading(float humidity, float temperature): humidity(humidity), temperature(temperature) {}
 };
 
 
@@ -35,10 +37,11 @@ class App final {
 private:
     hal::IGpio* gpio;
     std::list<DigitalReconfigurableIo*> sensorPins;
-    std::vector<Dht11SensorPath> dht11SensorPaths;
-    std::vector<Dht22SensorPath> dht22SensorPaths;
+    std::vector<DhtSensorPath> dht11SensorPaths;
+    std::vector<DhtSensorPath> dht22SensorPaths;
     int logIntervalSec = 0;
     std::unique_ptr<csv::Writer> csvWriter;
+    bool testMode = false;
 
 public:
     App(hal::IGpio& gpio);
@@ -48,5 +51,7 @@ public:
     void run(void);
 
 private:
+    void runTest(void);
+    void testSensorPath(const DhtSensorPath& sensorPath);
     bool pinNumberExists(hal::PinNumber_t pinNumber);
 };
