@@ -39,8 +39,8 @@ private:
     std::list<DigitalReconfigurableIo*> sensorPins;
     std::vector<DhtSensorPath> dht11SensorPaths;
     std::vector<DhtSensorPath> dht22SensorPaths;
-    int logIntervalSec = 0;
     std::unique_ptr<csv::Writer> csvWriter;
+    std::chrono::seconds logIntervalSec = std::chrono::seconds(0);
     bool testMode = false;
 
 public:

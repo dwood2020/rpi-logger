@@ -73,6 +73,7 @@ bool App::init(void) {
         LOG_INFO("Added DHT22 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
     }
 
+    logIntervalSec = std::chrono::seconds(config.getLogIntervalSec());
     testMode = config.getTestMode();
 
     return true;
@@ -84,7 +85,20 @@ void App::run(void) {
         return;
     }
 
+    LOG_INFO("logIntervalSec: %v", logIntervalSec.count());
+    std::chrono::time_point tStart = std::chrono::steady_clock::now();
+    std::chrono::time_point tIntervalEnd = tStart + logIntervalSec;
 
+    // Do business
+    LOG_INFO("DOING BUSINESS .....");
+
+    std::chrono::time_point tEnd = std::chrono::steady_clock::now();
+    if (tEnd > tIntervalEnd) {
+        LOG_WARN("Measurement duration exceeds configured log interval.");
+    }
+    else {
+        std::this_thread::sleep_until(tIntervalEnd);
+    }
 }
 
 void App::runTest(void) {
