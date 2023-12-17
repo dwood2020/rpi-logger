@@ -1,5 +1,6 @@
 #include "App.h"
 #include <chrono>
+#include <cmath>
 #include <filesystem>
 #include <thread>
 #include <vector>
@@ -110,7 +111,9 @@ void App::runTest(void) {
 
 void App::testSensorPath(const DhtSensorPath& sensorPath) {
     int failedReadings = 0;
-    std::vector<DhtSensorReading> readings(10);
+    std::vector<DhtSensorReading> readings;
+    readings.reserve(10);
+
     for (int i = 0; i < 10; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         if (sensorPath.sensor->poll()) {
@@ -134,8 +137,8 @@ void App::testSensorPath(const DhtSensorPath& sensorPath) {
         averageReading.humidity += readings[i].humidity;
         averageReading.temperature += readings[i].temperature;
     }
-    averageReading.humidity /= static_cast<float>(10 - failedReadings);
-    averageReading.temperature /= static_cast<float>(10 - failedReadings);
+    averageReading.humidity = std::roundf((averageReading.humidity / static_cast<float>(10 - failedReadings)) * 100.0f) / 100.0f;
+    averageReading.temperature = std::roundf((averageReading.temperature/ static_cast<float>(10 - failedReadings)) * 100.0f) / 100.0f;
 
     LOG_INFO("Average reading of %v successful attempts: Humidity %v % RH, Temperature %v °C", 
         (10 - failedReadings), averageReading.humidity, averageReading.temperature);
