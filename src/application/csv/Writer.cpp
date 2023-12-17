@@ -53,7 +53,7 @@ void csv::Writer::writeLine(void) {
 
 void csv::Writer::findFullPath(void) {
     std::filesystem::path fullPath = basePath;
-    fullPath.concat(filename);
+    fullPath = fullPath / std::filesystem::path(filename);
     std::filesystem::path fullPathExt = fullPath;
     fullPathExt.concat(fileExtension);
     int i = 0;
@@ -69,7 +69,7 @@ void csv::Writer::findFullPath(void) {
 void csv::Writer::writeLine(std::function<std::string(std::shared_ptr<ColumnBase>)> func) {
     std::stringstream ss;
     for (unsigned int i = 0; i < columns.size() - 1; i++) {
-        ss << func(columns[i]) << " " << delimiter;
+        ss << func(columns[i]) << delimiter << " ";
     }
     ss << func(columns.back()) << " \n";
     writeLineToFile(ss.str());
