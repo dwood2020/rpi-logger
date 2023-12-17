@@ -21,7 +21,6 @@
 
 int main(void) {
 
-
 #if HOSTED
     hal::hosted::Gpio gpio;
 #else
@@ -29,7 +28,9 @@ int main(void) {
 #endif /* HOSTED */
 
     App app(gpio);
-    app.init();
+    if (app.init()) {
+        app.run();
+    }
 
 
     // if (!gpio.init()) {
@@ -46,27 +47,6 @@ int main(void) {
     // else {
     //     std::cout << "Sensor polling failed. Last error: " << static_cast<int>(sensor.getLastError()) << std::endl;
     // }
-
-    // // Testing CsvWriter
-    // // std::shared_ptr<csv::Column> col1 = std::make_shared<csv::Column>("TestColumn");
-    // // csv::Writer writer({col1}, ".");
-    // // writer.initialize();
-    // // col1->logValue(100);
-    // // writer.writeLine();
-    // // col1->logValue(200);
-    // // writer.writeLine();
-    // // col1->logValue(300);
-    // // writer.writeLine();
-
-    // // Test AppConfig
-    // AppConfig appConfig;
-    // try {
-    //     appConfig.parse(std::filesystem::current_path());
-    // } catch (std::runtime_error& e) {
-    //     std::cout << "Could not parse AppConfig: " << e.what() << std::endl;
-    //     return -1;
-    // }
-    // std::cout << appConfig.toString() << std::endl;
 
     // DigitalOutput pin(gpio, 24);
     // for (int i = 0; i < 10; i++) {
