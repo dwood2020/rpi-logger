@@ -123,6 +123,12 @@ void App::testSensorPath(const DhtSensorPath& sensorPath) {
             failedReadings++;
         }
     }
+
+    if (failedReadings == 10) {
+        LOG_INFO("All readings failed for '%v'.", sensorPath.column->getName());
+        return;
+    }
+
     DhtSensorReading averageReading;
     for (int i = 0; i < (10 - failedReadings); i++) {
         averageReading.humidity += readings[i].humidity;
@@ -130,6 +136,9 @@ void App::testSensorPath(const DhtSensorPath& sensorPath) {
     }
     averageReading.humidity /= static_cast<float>(10 - failedReadings);
     averageReading.temperature /= static_cast<float>(10 - failedReadings);
+
+    LOG_INFO("Average reading of %v successful attempts: Humidity %v % RH, Temperature %v °C", 
+        (10 - failedReadings), averageReading.humidity, averageReading.temperature);
 }
 
 bool App::pinNumberExists(hal::PinNumber_t pinNumber) {
