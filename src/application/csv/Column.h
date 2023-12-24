@@ -31,6 +31,7 @@ namespace csv {
         void logValue(float value);
         void logValue(const std::string& value);
         void logValue(bool value);
+        void logNA(void);
     };
 
 

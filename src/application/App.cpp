@@ -168,6 +168,39 @@ void App::testSensorPath(const DhtSensorPath& sensorPath) {
         (10 - failedReadings), averageReading.humidity, averageReading.temperature);
 }
 
+void App::performReading(const DhtSensorPath& sensorPath) {
+    std::vector<DhtSensorReading> readings;
+    readings.reserve(3);
+    int successfulReadings = 0;
+
+    for (int i = 0; i < 10; i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        if (sensorPath.sensor->poll()) {
+            DhtSensorReading reading(sensorPath.sensor->getHumidity(), sensorPath.sensor->getTemperature());
+            readings.push_back(reading);
+            successfulReadings++;
+        }
+        if (successfulReadings == 3) {
+            break;
+        }
+    }
+
+    if (successfulReadings == 0) {
+        sensorPath.column->logNA();
+        return;
+    }
+
+    DhtSensorReading averageReading;
+    for (int i = 0; i < successfulReadings; i++) {
+        averageReading.humidity += readings[i].humidity;
+        averageReading.temperature += readings[i].temperature;
+    }
+    averageReading.humidity = std::roundf((averageReading.humidity / static_cast<float>(successfulReadings)) * 100.0f) / 100.0f;
+    averageReading.temperature = std::roundf((averageReading.temperature/ static_cast<float>(successfulReadings)) * 100.0f) / 100.0f;
+
+    // TODO: SensorReading needs flag whether humidity or temp or 2 columns
+}
+
 bool App::pinNumberExists(hal::PinNumber_t pinNumber) {
     for (auto existingPin : sensorPins) {
         if (existingPin->getNumber() == pinNumber) {

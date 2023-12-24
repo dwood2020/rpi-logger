@@ -53,5 +53,6 @@ public:
 private:
     void runTest(void);
     void testSensorPath(const DhtSensorPath& sensorPath);
+    void performReading(const DhtSensorPath& sensorPath);
     bool pinNumberExists(hal::PinNumber_t pinNumber);
 };

@@ -45,6 +45,9 @@ void csv::Column::logValue(bool value) {
     }
 }
 
+void csv::Column::logNA(void) {
+    value = "NA";
+}
 
 void csv::TimestampColumn::update(void) {
     value = makeDateTimeString();
