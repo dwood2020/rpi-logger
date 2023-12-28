@@ -81,6 +81,9 @@ bool App::init(void) {
 
     logIntervalSec = std::chrono::seconds(config.getLogIntervalSec());
     testMode = config.getTestMode();
+    if (!testMode) {
+        csvWriter->initialize();
+    }
 
     return true;
 }
@@ -112,6 +115,7 @@ void App::run(void) {
         for (const auto& dht22Path : dht22SensorPaths) {
             performReading(dht22Path);
         }
+        csvWriter->writeLine();
 
         std::chrono::time_point tEnd = std::chrono::steady_clock::now();
         if (tEnd > tIntervalEnd) {
