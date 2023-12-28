@@ -16,7 +16,8 @@ public:
         pinNumber(pinNumber), logNameHumidity(logNameHumidity), logNameTemp(logNameTemp) {}
 
     inline friend std::ostream& operator<< (std::ostream& os, const SensorConfig& inst) {
-        return  os << "{" << inst.pinNumber << ", [" << inst.logNameHumidity << ", " << inst.logNameTemp << "]}";
+        return  os << "{ pinNumber: " << inst.pinNumber << ", logNameHumidity: " << inst.logNameHumidity 
+        << ", logNameTemperature: " << inst.logNameTemp << " }";
     }
 };
 
