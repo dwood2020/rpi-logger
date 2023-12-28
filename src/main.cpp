@@ -27,20 +27,20 @@ int main(void) {
     hal::bcm2835::Gpio gpio;
 #endif /* HOSTED */
 
-    // App app(gpio);
-    // if (app.init()) {
-    //     app.run();
-    // }
+    App app(gpio);
+    if (app.init()) {
+        app.run();
+    }
 
 
     // Test CSV writer
-    auto column1 = std::make_shared<csv::Column>("column1");
-    csv::Writer writer({column1}, std::filesystem::current_path());
-    writer.initialize();
-    for (int i = 0; i < 200000; i++) {
-        column1->logValue(i);
-        writer.writeLine();
-    }
+    // auto column1 = std::make_shared<csv::Column>("column1");
+    // csv::Writer writer({column1}, std::filesystem::current_path());
+    // writer.initialize();
+    // for (int i = 0; i < 200000; i++) {
+    //     column1->logValue(i);
+    //     writer.writeLine();
+    // }
 
     // if (!gpio.init()) {
     //     std::cout << "Failed to init GPIO!" << std::endl;
