@@ -29,8 +29,8 @@ void AppConfig::parse(std::filesystem::path configFileDir) {
         auto dht11Configs = cfgData["dht11Configs"];
         if (dht11Configs.is_array()) {
             for (const auto& cfg : dht11Configs) {
-                if (cfg.contains("pinNumber") && cfg.contains("logName")) {
-                    SensorConfig cfgInstance(static_cast<hal::PinNumber_t>(cfg["pinNumber"]), std::string(cfg["logName"]));
+                if (cfg.contains("pinNumber") && cfg.contains("logNameHumidity") && cfg.contains("logNameTemperature")) {
+                    SensorConfig cfgInstance(static_cast<hal::PinNumber_t>(cfg["pinNumber"]), std::string(cfg["logNameHumidity"]), std::string(cfg["logNameTemperature"]));
                     this->dht11Configs.push_back(cfgInstance);
                 }
             }
@@ -40,8 +40,8 @@ void AppConfig::parse(std::filesystem::path configFileDir) {
         auto dht22Configs = cfgData["dht22Configs"];
         if (dht22Configs.is_array()) {
             for (const auto& cfg : dht22Configs) {
-                if (cfg.contains("pinNumber") && cfg.contains("logName")) {
-                    SensorConfig cfgInstance(static_cast<hal::PinNumber_t>(cfg["pinNumber"]), std::string(cfg["logName"]));
+                if (cfg.contains("pinNumber") && cfg.contains("logNameHumidity") && cfg.contains("logNameTemperature")) {
+                    SensorConfig cfgInstance(static_cast<hal::PinNumber_t>(cfg["pinNumber"]), std::string(cfg["logNameHumidity"]), std::string(cfg["logNameTemperature"]));
                     this->dht22Configs.push_back(cfgInstance);
                 }
             }

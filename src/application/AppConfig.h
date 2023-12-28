@@ -9,12 +9,14 @@
 class SensorConfig {
 public:
     const hal::PinNumber_t pinNumber;
-    const std::string logName;
+    const std::string logNameHumidity;
+    const std::string logNameTemp;
 
-    SensorConfig(hal::PinNumber_t pinNumber, const std::string& logName): pinNumber(pinNumber), logName(logName) {}
+    SensorConfig(hal::PinNumber_t pinNumber, const std::string& logNameHumidity, const std::string& logNameTemp): 
+        pinNumber(pinNumber), logNameHumidity(logNameHumidity), logNameTemp(logNameTemp) {}
 
     inline friend std::ostream& operator<< (std::ostream& os, const SensorConfig& inst) {
-        return  os << "{" << inst.pinNumber << ", " << inst.logName << "}";
+        return  os << "{" << inst.pinNumber << ", [" << inst.logNameHumidity << ", " << inst.logNameTemp << "]}";
     }
 };
 

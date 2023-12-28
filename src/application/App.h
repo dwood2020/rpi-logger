@@ -14,10 +14,13 @@
 
 struct DhtSensorPath {
     std::unique_ptr<DhtBase> sensor;
-    std::shared_ptr<csv::Column> column;
+    std::shared_ptr<csv::Column> columnHumidity;
+    std::shared_ptr<csv::Column> columnTemp;
 
-    DhtSensorPath(std::unique_ptr<DhtBase> sensor, std::shared_ptr<csv::Column> column): sensor(std::move(sensor)), column(column) {}
-    DhtSensorPath(DhtSensorPath&& other) noexcept: sensor(std::move(other.sensor)), column(std::move(other.column)) {}
+    DhtSensorPath(std::unique_ptr<DhtBase> sensor, std::shared_ptr<csv::Column> columnHumidity, std::shared_ptr<csv::Column> columnTemp): 
+        sensor(std::move(sensor)), columnHumidity(columnHumidity), columnTemp(columnTemp) {}
+    DhtSensorPath(DhtSensorPath&& other) noexcept: 
+        sensor(std::move(other.sensor)), columnHumidity(std::move(other.columnHumidity)), columnTemp(std::move(other.columnTemp)) {}
 };
 
 

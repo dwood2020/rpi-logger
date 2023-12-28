@@ -53,10 +53,13 @@ bool App::init(void) {
 
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
-        auto column = std::make_shared<csv::Column>(cfg.logName);
-        dht11SensorPaths.emplace_back(std::make_unique<Dht11>(*pin), column);
-        csvWriter->addColumn(column);
-        LOG_INFO("Added DHT11 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
+        auto columnHumidity = std::make_shared<csv::Column>(cfg.logNameHumidity);
+        auto columnTemp = std::make_shared<csv::Column>(cfg.logNameTemp);
+        dht11SensorPaths.emplace_back(std::make_unique<Dht11>(*pin), columnHumidity, columnTemp);
+        csvWriter->addColumn(columnHumidity);
+        csvWriter->addColumn(columnTemp);
+        LOG_INFO("Added DHT11 config: pin %v, humidity log name '%v', temperature log name '%v'", 
+            pin->getNumber(), columnHumidity->getName(), columnTemp->getName());
     }
 
     for (const SensorConfig cfg : config.getDht22Configs()) {
@@ -67,10 +70,13 @@ bool App::init(void) {
 
         auto pin = new DigitalReconfigurableIo(*gpio, cfg.pinNumber);
         sensorPins.push_back(pin);
-        auto column = std::make_shared<csv::Column>(cfg.logName);
-        dht22SensorPaths.emplace_back(std::make_unique<Dht22>(*pin), column);
-        csvWriter->addColumn(column);
-        LOG_INFO("Added DHT22 config: pin %v, log name '%v'", pin->getNumber(), column->getName());
+        auto columnHumidity = std::make_shared<csv::Column>(cfg.logNameHumidity);
+        auto columnTemp = std::make_shared<csv::Column>(cfg.logNameTemp);
+        dht22SensorPaths.emplace_back(std::make_unique<Dht22>(*pin), columnHumidity, columnTemp);
+        csvWriter->addColumn(columnHumidity);
+        csvWriter->addColumn(columnTemp);
+        LOG_INFO("Added DHT11 config: pin %v, humidity log name '%v', temperature log name '%v'", 
+            pin->getNumber(), columnHumidity->getName(), columnTemp->getName());
     }
 
     logIntervalSec = std::chrono::seconds(config.getLogIntervalSec());
@@ -100,6 +106,12 @@ void App::run(void) {
 
         // Do business
         LOG_INFO("DOING BUSINESS .....");
+        for (const auto& dht11Path : dht11SensorPaths) {
+            performReading(dht11Path);
+        }
+        for (const auto& dht22Path : dht22SensorPaths) {
+            performReading(dht22Path);
+        }
 
         std::chrono::time_point tEnd = std::chrono::steady_clock::now();
         if (tEnd > tIntervalEnd) {
@@ -145,14 +157,15 @@ void App::testSensorPath(const DhtSensorPath& sensorPath) {
             readings.push_back(reading);
         }
         else {
-            LOG_ERROR("Sensor path '%v' reading #%v failed. Error code %v", 
-                sensorPath.column->getName(), i, static_cast<int>(sensorPath.sensor->getLastError()));
+            LOG_ERROR("Sensor path '%v', '%v' reading #%v failed. Error code %v", 
+                sensorPath.columnHumidity->getName(), sensorPath.columnTemp->getName(), i, 
+                static_cast<int>(sensorPath.sensor->getLastError()));
             failedReadings++;
         }
     }
 
     if (failedReadings == 10) {
-        LOG_INFO("All readings failed for '%v'.", sensorPath.column->getName());
+        LOG_INFO("All readings failed for '%v', '%v'.", sensorPath.columnHumidity->getName(), sensorPath.columnTemp->getName());
         return;
     }
 
@@ -186,7 +199,8 @@ void App::performReading(const DhtSensorPath& sensorPath) {
     }
 
     if (successfulReadings == 0) {
-        sensorPath.column->logNA();
+        sensorPath.columnHumidity->logNA();
+        sensorPath.columnTemp->logNA();
         return;
     }
 
@@ -198,7 +212,8 @@ void App::performReading(const DhtSensorPath& sensorPath) {
     averageReading.humidity = std::roundf((averageReading.humidity / static_cast<float>(successfulReadings)) * 100.0f) / 100.0f;
     averageReading.temperature = std::roundf((averageReading.temperature/ static_cast<float>(successfulReadings)) * 100.0f) / 100.0f;
 
-    // TODO: SensorReading needs flag whether humidity or temp or 2 columns
+    sensorPath.columnHumidity->logValue(averageReading.humidity);
+    sensorPath.columnTemp->logValue(averageReading.temperature);
 }
 
 bool App::pinNumberExists(hal::PinNumber_t pinNumber) {
