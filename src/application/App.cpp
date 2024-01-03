@@ -108,7 +108,6 @@ void App::run(void) {
         }
 
         // Do business
-        LOG_INFO("DOING BUSINESS .....");
         for (const auto& dht11Path : dht11SensorPaths) {
             performReading(dht11Path);
         }
