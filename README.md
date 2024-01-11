@@ -21,7 +21,7 @@ following structure:
             "pinNumber": 24,
             "logNameHumidity": "sensor1_humidity",
             "logNameTemperature": "sensor1_temp"
-        },
+        }
     ],
     "testMode": false
 }
