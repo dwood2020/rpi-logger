@@ -19,6 +19,7 @@ Description=Launches rpi-logger.
 
 [Service]
 WorkingDirectory="$PWD"
+StandardOutput=null
 ExecStart="$PWD"/rpi-logger
 
 [Install]
