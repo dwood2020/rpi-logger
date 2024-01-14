@@ -4,12 +4,12 @@ Temperature and humidity logger software based on the Raspberry Pi.
 ## Usage
 Multiple DHT-11 and DHT-22 sensors are supported and the logger is configurable to a certain extent via a JSON configuration file.
 Logging interval, CSV output directory and "sensor paths" are configurable.
-A sensor path is referred to a GPIO input pin number + 2 CSV column names.
+A sensor path refers to a GPIO input pin number + 2 CSV column names.
 The input pin is connected to the sensor's data line and the CSV column names are labels to the output humidity and temperature values.
 
 #### Example:
 The configuration file must be named `rpiLoggerConfig.json` and must reside next to the executable.
-For an example case with a single DHT-22 sensor connected to GPIO pin 24 (physical 18), the configuration file must have the 
+For an example case with a single DHT-22 sensor connected to GPIO pin 24 (physical 18), the configuration file has the 
 following structure:
 ```json
 {
@@ -42,8 +42,8 @@ connection testing.
 - [DHT11/DHT22 custom protocol implementation](https://www.iot-programmer.com/index.php/books/22-raspberry-pi-and-the-iot-in-c/chapters-raspberry-pi-and-the-iot-in-c/41-raspberry-pi-and-the-iot-in-c-a-custom-protocol-the-dht11-dht22)
 
 ## How to build
-This project can either be built on the target platform (a Raspberry Pi, tested on 4, 3B) or on any other host platform with a C++20
-compiler.    
+This project can either be built on the target platform (a Raspberry Pi, tested on the models 4, 3B+) or on any other host platform with a 
+C++20 compiler.    
 To build on a Raspberry Pi, run
 ```
 mkdir build
