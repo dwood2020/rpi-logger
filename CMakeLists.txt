@@ -43,5 +43,6 @@ set(RELEASE_DIR "${CMAKE_BINARY_DIR}/release")
 install(DIRECTORY DESTINATION ${RELEASE_DIR})
 
 install(TARGETS ${MAIN_TARGET} DESTINATION ${RELEASE_DIR})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/autostart/installStartService.sh DESTINATION ${RELEASE_DIR})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/autostart/removeStartService.sh DESTINATION ${RELEASE_DIR})
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/autostart/installStartService.sh" DESTINATION ${RELEASE_DIR})
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/autostart/removeStartService.sh" DESTINATION ${RELEASE_DIR})
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/rpiLoggerConfig.json" DESTINATION ${RELEASE_DIR})

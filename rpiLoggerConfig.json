@@ -1,0 +1,7 @@
+{
+    "logIntervalSec": 60,
+    "csvOutputDir": ".",
+    "dht11Configs": [],
+    "dht22Configs": [],
+    "testMode": false
+}
