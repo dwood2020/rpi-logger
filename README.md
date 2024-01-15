@@ -1,13 +1,22 @@
 # rpi-logger
 Temperature and humidity logger software based on the Raspberry Pi.    
 
+## Installation
+- Move the release directory to your preferred installation location and rename.
+- From that exact same location, run
+```
+chmod +x installStartService.sh
+sudo ./installStartService.sh
+```
+- Adapt `rpiLoggerConfig.json` as required.
+
 ## Usage
 Multiple DHT-11 and DHT-22 sensors are supported and the logger is configurable to a certain extent via a JSON configuration file.
 Logging interval, CSV output directory and "sensor paths" are configurable.
 A sensor path refers to a GPIO input pin number + 2 CSV column names.
 The input pin is connected to the sensor's data line and the CSV column names are labels to the output humidity and temperature values.
 
-#### Example:
+### Example:
 The configuration file must be named `rpiLoggerConfig.json` and must reside next to the executable.
 For an example case with a single DHT-22 sensor connected to GPIO pin 24 (physical 18), the configuration file has the 
 following structure:
@@ -37,7 +46,7 @@ whereas
 - `testMode` if set to `true`, the application enters a test mode which does not write CSVs but prints verbose outputs for sensor 
 connection testing.
 
-#### Useful references:
+### Useful references:
 - [Raspberry Pi GPIO Pinout](https://pinout.xyz/)
 - [DHT11/DHT22 custom protocol implementation](https://www.iot-programmer.com/index.php/books/22-raspberry-pi-and-the-iot-in-c/chapters-raspberry-pi-and-the-iot-in-c/41-raspberry-pi-and-the-iot-in-c-a-custom-protocol-the-dht11-dht22)
 
@@ -59,6 +68,16 @@ cd build
 cmake -G <preferred generator, e.g. Ninja> .. -DHOSTED=ON
 cmake --build .
 ```
+
+## How to create a release
+```
+mkdir build 
+cd build
+cmake -G <preferred generator> -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+cmake --install . --config Release
+```
+The release files are bundled in a directory `release`.
 
 ## Third-party dependencies
 - [Broadcom BCM 2835 library](http://www.airspayce.com/mikem/bcm2835/) (**GPLv3!!**)
