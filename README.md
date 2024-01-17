@@ -1,5 +1,6 @@
 # rpi-logger
-Temperature and humidity logger software based on the Raspberry Pi.    
+Temperature and humidity logging software for the Raspberry Pi.    
+Intended to be used with DHT-11 or DHT-22 temperature and humidity sensors.
 
 ## Installation
 - Move the release directory to your preferred installation location and rename.
@@ -80,6 +81,10 @@ cmake --install . --config Release
 The release files are bundled in a directory `release`.
 
 ## Third-party dependencies
-- [Broadcom BCM 2835 library](http://www.airspayce.com/mikem/bcm2835/) (**GPLv3!!**)
+- [Broadcom BCM 2835 library](http://www.airspayce.com/mikem/bcm2835/) (**GPLv3**)
 - [Easylogging++ library](https://github.com/abumq/easyloggingpp) (MIT)
 - [JSON for Modern C++](https://json.nlohmann.me/) (MIT)
+
+### Note on licensing
+This software includes the GPLv3-licensed BCM 2835 library and must therefore 
+itself be licensed under GPLv3, see 
