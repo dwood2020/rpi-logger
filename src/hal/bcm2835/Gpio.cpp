@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2024  David Woodward
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include "Gpio.h"
 #include "bcm2835.h"
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2024  David Woodward
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #pragma once
 #include "IDigitalIo.h"
 #include "hal/IGpio.h"
