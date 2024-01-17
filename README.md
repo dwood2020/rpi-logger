@@ -87,4 +87,6 @@ The release files are bundled in a directory `release`.
 
 ### Note on licensing
 This software includes the GPLv3-licensed BCM 2835 library and must therefore 
-itself be licensed under GPLv3, see 
+itself be licensed under GPLv3, see [LICENSE.txt](LICENSE.txt).    
+To follow common practises, a short licensing information block is included at 
+the top of every source file.
