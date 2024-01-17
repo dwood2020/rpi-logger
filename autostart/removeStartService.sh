@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Copyright (C) 2024  David Woodward
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # ==============================================================================
 # Removes the installed start service from the system.
 # ==============================================================================

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Copyright (C) 2024  David Woodward
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # ==============================================================================
 # Creates a systemd service which launches the `rpi-logger` executable after
 # every system reboot.
