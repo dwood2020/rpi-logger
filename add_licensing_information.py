@@ -7,7 +7,7 @@ g_license_text: str = """
  */
 """
 
-def add_license(file_path: str) -> None:
+def add_license_comment(file_path: str) -> None:
     with open(file_path, 'r') as file:
         content = file.read()
 
@@ -15,15 +15,18 @@ def add_license(file_path: str) -> None:
         file.write(g_license_text + '\n\n' + content)
 
 
-def main() -> None:
-    cwd: str = os.getcwd()
-
-    for root, _, files in os.walk(cwd):
+def process_files(dir_path: str) -> None:
+    for root, _, files in os.walk(dir_path):
         for file in files:
             if file.endswith(('.cpp', '.h')):
                 file_path: str = os.path.join(root, file)
-                add_license(file_path)
+                add_license_comment(file_path)
                 print(f"Licensing text added to {file_path}")
+
+
+def main() -> None:
+    src_path: str = os.path.join(os.getcwd(), "src")
+    process_files(src_path)
 
 
 if __name__ == "__main__":
