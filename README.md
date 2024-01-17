@@ -4,10 +4,10 @@ Temperature and humidity logger software based on the Raspberry Pi.
 ## Installation
 - Move the release directory to your preferred installation location and rename.
 - From that exact same location, run
-```
-chmod +x installStartService.sh
-sudo ./installStartService.sh
-```
+    ```
+    chmod +x installStartService.sh
+    sudo ./installStartService.sh
+    ```
 - Adapt `rpiLoggerConfig.json` as required.
 
 ## Usage
