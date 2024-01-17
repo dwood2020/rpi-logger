@@ -1,6 +1,8 @@
 # rpi-logger
 Temperature and humidity logging software for the Raspberry Pi.    
-Intended to be used with DHT-11 or DHT-22 temperature and humidity sensors.
+Intended to be used with DHT-11 or DHT-22 temperature and humidity sensors.    
+
+For a release history list, see [RELEASE_HISTORY.md](RELEASE_HISTORY.md).
 
 ## Installation
 - Move the release directory to your preferred installation location and rename.
